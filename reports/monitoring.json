@@ -1,0 +1,89 @@
+{
+  "published_at": "2026-10-16T22:55:49.624888+00:00",
+  "sources": {
+    "arxiv": {
+      "bronze_rows_checked": 100075,
+      "silver_rows_checked": 100075,
+      "quality_success": true,
+      "quality": {
+        "evaluated": 7,
+        "failed": 0,
+        "error_pct": 0.0
+      },
+      "bronze": {
+        "timestamp": "2026-10-16T19:51:21.997000+00:00",
+        "age_seconds": 11067.627888
+      },
+      "silver": {
+        "timestamp": "2026-10-16T19:57:39+00:00",
+        "age_seconds": 10690.624888
+      },
+      "last_quality_check": {
+        "timestamp": "2026-10-16T19:57:30.086350+00:00",
+        "age_seconds": 10699.538538
+      }
+    },
+    "hn": {
+      "bronze_rows_checked": 7998,
+      "silver_rows_checked": 1049,
+      "quality_success": true,
+      "quality": {
+        "evaluated": 6,
+        "failed": 0,
+        "error_pct": 0.0
+      },
+      "bronze": {
+        "timestamp": "2026-10-16T22:55:20.689000+00:00",
+        "age_seconds": 28.935888
+      },
+      "silver": {
+        "timestamp": "2026-10-16T22:55:44+00:00",
+        "age_seconds": 5.624888
+      },
+      "last_quality_check": {
+        "timestamp": "2026-10-16T22:55:44.381022+00:00",
+        "age_seconds": 5.243866
+      }
+    },
+    "citations": {
+      "bronze_rows_checked": 5030,
+      "silver_rows_checked": 4970,
+      "quality_success": true,
+      "quality": {
+        "evaluated": 5,
+        "failed": 0,
+        "error_pct": 0.0
+      },
+      "bronze": {
+        "timestamp": "2026-10-16T19:56:31.314000+00:00",
+        "age_seconds": 10758.310888
+      },
+      "silver": {
+        "timestamp": "2026-10-16T19:59:01+00:00",
+        "age_seconds": 10608.624888
+      },
+      "last_quality_check": {
+        "timestamp": "2026-10-16T19:58:57.326362+00:00",
+        "age_seconds": 10612.298526
+      }
+    }
+  },
+  "gold": {
+    "rows": 100075,
+    "updated": {
+      "timestamp": "2026-10-16T20:01:15.836000+00:00",
+      "age_seconds": 10473.788888
+    },
+    "quality": {
+      "evaluated": 6,
+      "failed": 0,
+      "error_pct": 0.0
+    },
+    "last_quality_check": {
+      "timestamp": "2026-10-16T22:52:33.870761+00:00",
+      "age_seconds": 195.754127
+    }
+  },
+  "rate_definition": "100 * unsuccessful_expectations / evaluated_expectations",
+  "refresh": "After each HN cycle and after the main pipeline; ages measured at publication."
+}

@@ -1,0 +1,75 @@
+{
+  "expectations": [
+    {
+      "id": "9d7cfbd8-23ac-4eb7-8cc5-d363071db99c",
+      "kwargs": {
+        "column": "arxiv_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "e483d3ae-3286-48d6-8204-c303d58a41a4",
+      "kwargs": {
+        "column": "arxiv_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "e51e0829-0365-4780-99ff-cdde1508fef5",
+      "kwargs": {
+        "column": "primary_category"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "83b8bd13-9e05-4d93-a0b7-b63fe8b0a326",
+      "kwargs": {
+        "column": "title",
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_value_lengths_to_be_between"
+    },
+    {
+      "id": "b00fffa0-d762-4987-985f-890363085c14",
+      "kwargs": {
+        "column": "arxiv_id",
+        "regex": "^(\\d{4}\\.\\d{4,5}|[a-z-]+(?:\\.[A-Z]{2})?/\\d{7})$"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_match_regex"
+    },
+    {
+      "id": "d4a3f10c-f800-4a83-ae7a-c35420776809",
+      "kwargs": {
+        "column": "date_published"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "b6502559-54cc-4f84-bff1-7a17ec26f74e",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    }
+  ],
+  "id": "5b11fe70-0e5e-4e63-85d1-1a509d8fc740",
+  "meta": {
+    "great_expectations_version": "1.15.2"
+  },
+  "name": "project_arxiv_quality_suite",
+  "notes": null
+}

@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "3df6668b-07ec-4c74-8abf-f6bc5f2d9e66",
+      "name": "project_arxiv_data"
+    },
+    "batch_definition": {
+      "id": "6daffd93-af3b-4a68-90a3-e227a8f23aab",
+      "name": "all_rows"
+    },
+    "datasource": {
+      "id": "8ad6aa6c-228f-4476-a788-857c9c664fd5",
+      "name": "project_arxiv_pandas"
+    }
+  },
+  "id": "6f2fb5ba-60a1-426f-9183-75e17c700cdb",
+  "name": "project_arxiv_validation",
+  "suite": {
+    "id": "5b11fe70-0e5e-4e63-85d1-1a509d8fc740",
+    "name": "project_arxiv_quality_suite"
+  }
+}

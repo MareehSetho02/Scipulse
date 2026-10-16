@@ -31,7 +31,9 @@ def ensure_bucket_exists(bucket_name: str) -> None:
     try:
         s3.head_bucket(Bucket=bucket_name)
         print(f"[OK] Bucket '{bucket_name}' déjà existant.")
-    except ClientError:
+    except ClientError as exc:
+        if str(exc.response["Error"].get("Code")) not in ("404", "NoSuchBucket", "NotFound"):
+            raise
         print(f"[INFO] Bucket '{bucket_name}' introuvable, création...")
         s3.create_bucket(Bucket=bucket_name)
         print(f"[OK] Bucket '{bucket_name}' créé.")
@@ -62,6 +64,8 @@ def split_and_upload(
     Découpe un fichier JSON lines en chunks et les upload vers MinIO.
     Chaque chunk contient `chunk_size` articles.
     """
+    if chunk_size < 1:
+        raise ValueError("chunk_size doit être positif")
     lines_buffer: list[str] = []
     chunk_index = 1
     total_lines = 0

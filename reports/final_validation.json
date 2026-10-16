@@ -1,0 +1,42 @@
+{
+  "timestamp": "2026-10-16T22:52:53.495591+00:00",
+  "tests": {
+    "tests": 20,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "rows_spark": 100075,
+  "rows_es": 100075,
+  "spark_run_id": "8deb9621-f960-41b5-8e00-04841edec07a",
+  "same_run_all_documents": true,
+  "analytical_queries": {
+    "academic_without_hn": {
+      "spark_expected": 881,
+      "elasticsearch_actual": 881,
+      "match": true
+    },
+    "viral_low_citations": {
+      "spark_expected": 3,
+      "elasticsearch_actual": 3,
+      "match": true
+    },
+    "cross_source": {
+      "spark_expected": 13,
+      "elasticsearch_actual": 13,
+      "match": true
+    }
+  },
+  "gold_checks": {
+    "unique_ids": true,
+    "same_row_count": true,
+    "unknown_citations_preserved": true,
+    "lower_bound_flag": true,
+    "score_range": true,
+    "quality_success": true,
+    "score_formula": true
+  },
+  "tfidf_holdout_recorded": true,
+  "tfidf_holdout_rerun": false,
+  "success": true
+}

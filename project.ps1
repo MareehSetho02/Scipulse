@@ -12,7 +12,7 @@ try {
             if($LASTEXITCODE -ne 0){throw 'Activation du polling HN échouée'}
             & docker @composeArgs exec -T airflow-scheduler airflow dags trigger scipulse_arxiv_pipeline
         }
-        'test' { & docker @composeArgs exec -T airflow-scheduler python -m pytest tests/test_project.py -q }
+        'test' { & docker @composeArgs exec -T airflow-scheduler python -m pytest tests/test_project.py tests/test_monitoring.py -q }
         'dashboards' { & docker @composeArgs exec -T airflow-scheduler python -m src.pipeline.dashboards }
         'down' { & docker @composeArgs down }
     }

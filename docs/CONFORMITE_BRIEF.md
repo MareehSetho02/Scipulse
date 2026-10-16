@@ -1,7 +1,7 @@
-# Attentes couvertes — du démarrage au dashboard Kibana augmenté
+# Fonctionnalités, résultats et limites
 
 
-| Attente couverte | Fichiers ou résultats |
+| Fonctionnalité | Fichiers ou résultats |
 |---|---|
 | Infrastructure Docker | `docker-compose.yml`, `docker-compose.project.yml`, `docker/runtime/` |
 | Trois sources | ArXiv, HN Firebase/Algolia, OpenAlex ; `src/pipeline/bronze.py` et `reports/bronze_*.json` |
@@ -19,36 +19,36 @@
 | Score d'impact | Citations, popularité HN et récence ; pondérations justifiées dans la méthodologie |
 | Exécution entre workers | Deux workers Docker sur un même hôte : 108 et 55 tâches terminées, aucune en échec ; `reports/spark_cluster_execution.json` |
 | Écriture des résultats Spark | Connecteur Elasticsearch-Hadoop vers `arxiv-papers-enriched` ; résumé dans `reports/gold_summary.parquet` |
-| Tests du code | Huit tests du pipeline réussis dans Docker ; douze tests locaux en incluant les TP |
+| Tests du code | 20 tests réussis dans Docker : quatre TP, huit pipeline et huit monitoring ; rapport `reports/tests_validation.xml` |
 
 ## Gold, orchestration et dashboard
 
-| Attente | Réalisation et vérification |
+| Fonctionnalité | Implémentation et validation |
 |---|---|
-| Écriture Gold via Elasticsearch-Hadoop | `src/analytics/spark_gold.py` ; 100 075 documents observés dans `arxiv-papers-enriched` pendant la revue |
+| Écriture Gold via Elasticsearch-Hadoop | `src/analytics/spark_gold.py` ; 100 075 documents observés dans `arxiv-papers-enriched` dans l'exécution enregistrée |
 | Spark intégré à Airflow | `airflow/dags/dag_arxiv_pipeline.py` ; `BashOperator` et preuve de réussite dans `reports/airflow_cluster_execution.json` |
 | Contrôle des résultats Gold | `src/pipeline/validate_gold.py` ; sept contrôles de cohérence et six attentes GX réussis dans le rapport enregistré |
 | Dashboard augmenté sur Gold | `src/pipeline/dashboards.py` ; compteurs, score d'impact, citations, profils et tableau filtrable |
-| Articles très cités sans HN observé | Filtre `citation_count >= 50 and hn_matched: false`, vérifié dans Kibana par l'utilisatrice |
-| Articles populaires HN et peu cités | Filtre `hn_score >= 50 and citation_count < 10`, vérifié dans Kibana par l'utilisatrice |
+| Articles très cités sans HN observé | Filtre `citation_count >= 50 and hn_matched: false`, 881 résultats dans les captures |
+| Articles populaires HN et peu cités | Filtre `hn_score >= 50 and citation_count < 10`, 3 résultats dans les captures |
 | Croissance des sous-domaines selon les signaux combinés | **Partiellement couvert :** le panneau existant mesure la croissance des publications, sans classement selon la croissance combinée citations/HN |
-| Preuves de consultation | Rapport navigateur antérieur dans `reports/browser_checks.json` ; filtres confirmés par l'utilisatrice ; six captures personnelles présentes : `scipulse-kibana0.png` à `scipulse-kibana5.png`, décrites dans `artifacts/screenshots/README.md` |
+| Preuves de consultation | Rapport navigateur antérieur dans `reports/browser_checks.json` ; résultats des filtres illustrés par six captures : `scipulse-kibana0.png` à `scipulse-kibana5.png`, décrites dans `artifacts/screenshots/README.md` |
 
 Les rapports et captures décrivent des vérifications enregistrées ; ils ne garantissent pas l'état permanent des services.
 
-## Exigences à distinguer des choix d'implémentation
+## Couverture fonctionnelle
 
-| Exigence du brief | État ou limite à cette étape |
+| Fonctionnalité | État et limites |
 |---|---|
-| Analyse des données avec statistiques et visualisations | Documents et notebooks avec graphiques dans `artifacts/figures/` ; noms et générateur non imposés |
+| Analyse des données avec statistiques et visualisations | Documents et notebooks avec graphiques dans `artifacts/figures/` |
 | Document ou notebook sur Spark | Méthodologie et notebook Spark : source, jointures, indicateurs et score |
-| Procédure de validation et captures Kibana | Contrôles et filtres documentés ; six captures personnelles examinées, dont les filtres affichant 881 et 3 résultats |
-| Volumes, taux d'erreur GX et fraîcheur dans le monitoring | Tableau de volumes et état qualité présents ; indicateurs détaillés de taux d'erreur et de fraîcheur à revoir |
+| Procédure de validation et captures Kibana | Contrôles et filtres documentés ; six captures, dont les filtres affichant 881 et 3 résultats |
+| Volumes, taux d'erreur GX et fraîcheur dans le monitoring | Volumes contrôlés par source, taux d'échec des attentes, dernières écritures et contrôles et anciennetés ; publication après chaque cycle HN ; méthode et limites dans `docs/MONITORING.md` |
 | Exploration ArXiv du module 1 | Anciens index et TP présents ; leur provenance ne démontre pas automatiquement une indexation de la Silver Medallion actuelle |
 | Indicateurs temporels par catégorie | Croissance des publications par catégorie ; vélocité récente par article, sans agrégation par catégorie explicitement exposée |
 | Ingestion complète des données sources | Corpus ArXiv échantillonné ; appels OpenAlex groupés par DOI, sans pagination exhaustive |
 
-Le brief présente les trois questions analytiques du dashboard augmenté comme des exemples de cas d'usage. Le panneau de croissance combinée manquant n'est donc pas présenté comme un panneau explicitement obligatoire ; sa couverture reste décrite sans la surestimer.
+Le dashboard permet de filtrer les articles par citations et popularité HN. Le panneau de croissance mesure uniquement l'évolution des publications, sans indicateur combiné citations/HN.
 
 ## Limites des résultats
 
@@ -59,3 +59,7 @@ Le brief présente les trois questions analytiques du dashboard augmenté comme 
 - Comparaison des plans de jointure, sans mesure indépendante de leurs temps d'exécution.
 
 La preuve Spark est issue du calcul exécuté après reprise de Docker. Elle ne constitue pas une validation sur plusieurs machines physiques.
+
+## Vérification du monitoring
+
+Le rapport `reports/monitoring_validation.json` conserve les contrôles navigateur et la comparaison des attributs du dashboard augmenté avant/après la publication ciblée. Les taux GX, les dates UTC et les anciennetés sont visibles sans erreur de panneau. `reports/monitoring.json` contient le dernier instantané. Les captures du monitoring sont enregistrées sous `monitoring-volumes-qualite.png` et `monitoring-fraicheur.png` dans `artifacts/screenshots/`. Elles présentent les volumes et taux GX, puis les dates et anciennetés.

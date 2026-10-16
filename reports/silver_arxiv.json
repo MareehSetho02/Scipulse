@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-10-16T19:57:30.086350+00:00",
+  "source": "arxiv",
+  "bronze_rows": 100075,
+  "missing_ids": 0,
+  "duplicate_ids": 0,
+  "silver_rows": 100075,
+  "quality_success": true,
+  "statistics": [
+    {
+      "evaluated_expectations": 7,
+      "successful_expectations": 7,
+      "unsuccessful_expectations": 0,
+      "success_percent": 100.0
+    }
+  ],
+  "short_abstracts": 12
+}

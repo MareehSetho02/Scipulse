@@ -1,11 +1,11 @@
 {
   "data": {
     "asset": {
-      "id": "52114b94-23fc-4908-a2ad-92f5f5c9cc62",
+      "id": "db818deb-c577-4f2d-b0e0-fca71ffd9e3e",
       "name": "project_gold_data"
     },
     "batch_definition": {
-      "id": "f64551d4-15ca-43fa-af1b-ef750d0e8e8d",
+      "id": "d2916a4a-a0d4-4f4d-ba2d-2d7358e84554",
       "name": "all_rows"
     },
     "datasource": {

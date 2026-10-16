@@ -1,10 +1,10 @@
 # Méthodologie — SciPulse Insights
 
-Périmètre : collecte des trois sources, qualité Silver, transformations dbt, calcul Spark, écriture Gold, intégration Airflow et dashboard Kibana augmenté.
+Périmètre : collecte des trois sources, qualité Silver, transformations dbt, calcul Spark, écriture Gold, intégration Airflow et dashboards Kibana augmenté et de monitoring.
 
 ## Architecture et choix des outils
 
-L'architecture suit les trois couches Medallion demandées : les données brutes JSONL sont conservées dans Bronze sur MinIO ; les données nettoyées et validées sont écrites en Parquet dans Silver sur MinIO ; Spark rapproche les trois sources et publie les articles enrichis dans Elasticsearch pour constituer la Gold.
+L'architecture comporte trois couches Medallion : les données brutes JSONL sont conservées dans Bronze sur MinIO ; les données nettoyées et validées sont écrites en Parquet dans Silver sur MinIO ; Spark rapproche les trois sources et publie les articles enrichis dans Elasticsearch pour constituer la Gold.
 
 Airflow orchestre la collecte ArXiv en batch, le polling Hacker News toutes les cinq minutes, la collecte des citations, le nettoyage et le traitement Spark. La stack Docker regroupe Elasticsearch, Kibana, Logstash, Airflow, MinIO, Spark et PostgreSQL, utilisé comme métastore Airflow.
 
@@ -83,19 +83,21 @@ hn_score >= 50 and citation_count < 10
 
 Ce filtre sélectionne les articles populaires sur HN et peu cités parmi ceux dont les citations sont connues. Les seuils 50 et 10 sont des choix de démonstration.
 
-Les deux filtres ont été vérifiés dans Kibana par l'utilisatrice au cours de la revue. Le rapport navigateur enregistré dans `reports/browser_checks.json` ne relevait aucune erreur visible sur le dashboard et confirmait 4 063 articles pour le filtre `primary_category: "cs.AI"`. Ce rapport décrit une vérification antérieure, pas une surveillance continue.
+Les deux filtres sélectionnent respectivement 881 et 3 articles dans les captures. Le rapport navigateur enregistré dans `reports/browser_checks.json` ne relevait aucune erreur visible sur le dashboard et confirmait 4 063 articles pour le filtre `primary_category: "cs.AI"`. Ce rapport décrit une vérification antérieure, pas une surveillance continue.
 
-**Limite :** le tableau de croissance utilise `growth_pct`, calculé sur les publications. Il ne classe pas les sous-domaines selon une croissance combinée des citations et du signal HN. Ce cas d'usage du brief n'est donc pas démontré par ce panneau.
+**Limite :** le tableau de croissance utilise `growth_pct`, calculé sur les publications. Il ne classe pas les sous-domaines selon une croissance combinée des citations et du signal HN. Le panneau ne mesure donc pas cette croissance combinée.
 
 ## Périmètre des preuves et captures
 
-Les statistiques descriptives et les graphiques de catégories, de publications, de couverture et de score répondent au contenu d'analyse demandé. Leurs quatre noms de fichiers ne sont pas imposés. Ils restent liés aux documents qui les affichent ; le script qui les a générés n'est pas nécessaire pour lire ces documents.
+Les statistiques descriptives s'appuient sur quatre graphiques : catégories, publications, couverture et distribution du score. Ils restent liés aux documents qui les affichent ; le script qui les a générés n'est pas nécessaire pour lire ces documents.
 
-Les six captures personnelles `scipulse-kibana0.png` à `scipulse-kibana5.png` sont présentes et ont été examinées. Elles couvrent les compteurs, les graphiques, le classement et les deux filtres analytiques. La capture 4 affiche 881 articles très cités sans HN observé ; la capture 5 affiche 3 articles populaires HN et peu cités. Les filtres KQL sont visibles. Voir [l'inventaire des captures](../artifacts/screenshots/README.md).
+Les six captures `scipulse-kibana0.png` à `scipulse-kibana5.png` illustrent le dashboard augmenté. Elles couvrent les compteurs, les graphiques, le classement et les deux filtres analytiques. La capture 4 affiche 881 articles très cités sans HN observé ; la capture 5 affiche 3 articles populaires HN et peu cités. Les filtres KQL sont visibles. Voir [l'inventaire des captures](../artifacts/screenshots/README.md).
 
-La vélocité récente décrite ici est calculée par article ; la croissance des publications est calculée par catégorie. Ces calculs ne constituent pas un classement des catégories par évolution combinée citations/HN. Le monitoring existant présente un instantané Bronze/Silver ; son taux d'erreur GX et sa fraîcheur détaillée restent à examiner séparément.
+La vélocité récente décrite ici est calculée par article ; la croissance des publications est calculée par catégorie. Ces calculs ne constituent pas un classement des catégories par évolution combinée citations/HN. Le monitoring présente désormais les volumes contrôlés, le taux d'échec des attentes GX et les dates de dépôt, de publication Silver et de calcul Gold, avec leur ancienneté à la publication. Le taux vaut 100 × attentes échouées / attentes évaluées ; un rapport absent n'est pas assimilé à 0 %. La tâche HN `refresh_monitoring`, exécutée avec `all_done`, renouvelle cet instantané après chaque cycle planifié. Les méthodes et limites sont détaillées dans [MONITORING.md](MONITORING.md).
 
 ## Références techniques
+
+La procédure, les résultats et les limites des tests sont décrits dans [VALIDATION.md](VALIDATION.md). Elle distingue les contrôles sur cas synthétiques, la cohérence du corpus Gold et le test technique de transformation TF-IDF.
 
 - Spark MLlib TF-IDF : https://spark.apache.org/docs/3.5.7/ml-features.html#tf-idf
 - Connecteur officiel Elastic : https://www.elastic.co/docs/reference/elasticsearch-hadoop/apache-spark-support

@@ -1,0 +1,72 @@
+{
+  "expectations": [
+    {
+      "id": "29dbf0c9-259b-4fbd-8830-69de8cc326bc",
+      "kwargs": {
+        "column": "hn_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "fb53c3a9-6341-4609-b07a-8630236b3f72",
+      "kwargs": {
+        "column": "hn_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "15ce51c4-86e9-448c-b4ca-b501675e5a41",
+      "kwargs": {
+        "column": "type",
+        "value_set": [
+          "story",
+          "comment",
+          "job",
+          "poll",
+          "pollopt"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_in_set"
+    },
+    {
+      "id": "83083547-b6c4-41aa-9173-43f8bad359d5",
+      "kwargs": {
+        "column": "score",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "3ea827a0-84fc-4756-82cc-f3f0559282e5",
+      "kwargs": {
+        "column": "time"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "93107d8a-ea2e-4641-9849-a11b6ca8901b",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    }
+  ],
+  "id": "d75a357a-fa12-471d-9d88-f31357a6d444",
+  "meta": {
+    "great_expectations_version": "1.15.2"
+  },
+  "name": "project_hn_quality_suite",
+  "notes": null
+}

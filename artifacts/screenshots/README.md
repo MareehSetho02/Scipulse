@@ -13,3 +13,9 @@ Les six images ci-dessous sont présentes dans ce dossier.
 
 Les captures 4 et 5 montrent le filtre KQL, le nombre de résultats et les colonnes citations, score HN et score d'impact. Elles illustrent les deux cas d'usage vérifiés.
 
+## Monitoring
+
+[monitoring-fraicheur.png](monitoring-fraicheur.png) présente les dates et les anciennetés de Bronze, Silver, des contrôles GX et de la Gold.
+
+[monitoring-volumes-qualite.png](monitoring-volumes-qualite.png) présente les volumes Bronze/Silver/Gold, les attentes échouées et évaluées et les taux d'échec GX.
+

@@ -1,0 +1,21 @@
+﻿version: 2
+sources:
+  - name: silver
+    schema: staging
+    tables:
+      - name: project_arxiv
+models:
+  - name: stg_arxiv_papers
+    columns:
+      - name: arxiv_id
+        tests: [unique, not_null]
+      - name: primary_category
+        tests: [not_null]
+  - name: dim_categories
+    columns:
+      - name: primary_category
+        tests: [unique, not_null]
+  - name: fct_publications_par_mois
+    columns:
+      - name: publications
+        tests: [not_null]

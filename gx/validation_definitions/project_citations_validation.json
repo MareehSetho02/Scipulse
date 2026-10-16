@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "2acec0ce-5bd2-4bed-baf1-ddea042fadae",
+      "name": "project_citations_data"
+    },
+    "batch_definition": {
+      "id": "2aeed74e-6cc0-4dfa-853b-64c79ef38a20",
+      "name": "all_rows"
+    },
+    "datasource": {
+      "id": "2086adcc-c93d-48c6-8356-8dd63b8983c6",
+      "name": "project_citations_pandas"
+    }
+  },
+  "id": "113db10e-f33b-4e85-908a-d9e5899175c0",
+  "name": "project_citations_validation",
+  "suite": {
+    "id": "b69b5e86-5192-4185-8174-b2608b62d631",
+    "name": "project_citations_quality_suite"
+  }
+}

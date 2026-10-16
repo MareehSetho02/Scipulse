@@ -1,0 +1,39 @@
+{
+  "insights_sha256_before": "a4cca1d8a1c28363ab8b0ddca7edea8f306e32bcb12f964403e8b0c3ca2ea81e",
+  "insights_sha256_after": "a4cca1d8a1c28363ab8b0ddca7edea8f306e32bcb12f964403e8b0c3ca2ea81e",
+  "insights_unchanged": true,
+  "visible_checks": {
+    "0 / 7": true,
+    "0 / 6": true,
+    "0 / 5": true,
+    "0.00 %": true,
+    "UTC": true,
+    "Gold : dernier calcul Spark": true,
+    "Silver : dernier Parquet": true,
+    "Anciennet": true,
+    "Taux d": true
+  },
+  "visible_errors": [],
+  "tests_passed": 16,
+  "snapshot_published_at": "2026-10-16T22:32:14.746105+00:00",
+  "hn_validation_run_id": "monitoring_validation_20261016T223446",
+  "airflow_run_state": "success",
+  "airflow_tasks": [
+    {
+      "task_id": "silver_hn",
+      "state": "success"
+    },
+    {
+      "task_id": "refresh_monitoring",
+      "state": "success"
+    },
+    {
+      "task_id": "bronze_hn",
+      "state": "success"
+    }
+  ],
+  "insights_unchanged_after_airflow": true,
+  "airflow_refreshed_snapshot": true,
+  "latest_snapshot_published_at": "2026-10-16T22:36:46.787530+00:00",
+  "latest_publication_matches_kibana": true
+}

@@ -1,0 +1,12 @@
+﻿scipulse:
+  target: local
+  outputs:
+    local:
+      type: postgres
+      host: "{{ env_var('PGHOST', 'postgres') }}"
+      user: "{{ env_var('PGUSER', 'scipulse') }}"
+      password: "{{ env_var('PGPASSWORD', 'scipulse') }}"
+      port: 5432
+      dbname: scipulse
+      schema: marts
+      threads: 2

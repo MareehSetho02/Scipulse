@@ -3,7 +3,8 @@ import json
 import os
 from pathlib import Path
 import requests
-from src.pipeline.config import ROOT,now
+from src.pipeline.config import ROOT,save_report
+from src.pipeline.monitoring import collect_snapshot,markdown
 BASE=os.getenv('KIBANA_URL','http://localhost:5601')
 HEADERS={'kbn-xsrf':'scipulse','Content-Type':'application/json'}
 VIEW='scipulse-gold-view'
@@ -53,17 +54,60 @@ Filtrer en cliquant une catégorie ou via KQL : `citation_matched: true and hn_m
 Le corpus comporte un échantillon CS/stat.ML et un complément ciblé de publications liées sur HN. Les tendances décrivent ce corpus ; elles ne mesurent pas la production mondiale. Les mots-clés affichés sont lexicaux ; le TF-IDF distribué est calculé séparément.'''
     save('visualization','sp-note',{'title':'Lire les résultats','visState':json.dumps({'title':'Lire les résultats','type':'markdown','params':{'markdown':note,'openLinksInNewTab':True},'aggs':[]}),'uiStateJSON':'{}','kibanaSavedObjectMeta':{'searchSourceJSON':'{}'}})
     dashboard('scipulse-insights','SciPulse Insights — influence scientifique et popularité tech',[('visualization','sp-note',0,0,48,9),('visualization','sp-count',0,9,12,7),('visualization','sp-coverage',12,9,12,7),('visualization','sp-hn',24,9,12,7),('visualization','sp-impact',36,9,12,7),('visualization','sp-categories',0,16,24,15),('visualization','sp-timeline',24,16,24,15),('visualization','sp-signals',0,31,24,15),('visualization','sp-growth',24,31,24,15),('search','sp-top',0,46,48,20)],'Couche Gold — trois sources, score composite, couverture et limites explicites')
-    reports={}
-    for name in ['bronze_arxiv','bronze_hn','bronze_citations','silver_arxiv','silver_hn','silver_citations','gold_validation']:
-        path=ROOT/'reports'/f'{name}.json'
-        if path.exists():reports[name]=json.loads(path.read_text(encoding='utf-8'))
-    lines=['## Monitoring du pipeline Medallion',f'Instantané publié : **{now()}**','Les volumes Bronze/Silver ci-dessous sont lus dans les manifestes MinIO. Les panneaux Gold interrogent Elasticsearch.','', '| Source | Bronze | Silver | Qualité |','|---|---:|---:|---|']
-    for source in ['arxiv','hn','citations']:
-        s=reports.get(f'silver_{source}',{});lines.append(f"| {source} | {s.get('bronze_rows','?')} | {s.get('silver_rows','?')} | {'Réussie' if s.get('quality_success') else 'À vérifier'} |")
-    lines+=['','**Fraîcheur :** consulter les dates des manifestes `reports/` et `pipeline_updated_at` dans Gold. La fraîcheur de collecte ne signifie pas que toutes les citations ont été mises à jour à la même date.','**Exécution :** Airflow http://localhost:8080 · DAG `scipulse_arxiv_pipeline` · HN toutes les 5 minutes.','Les contrôles bloquants interrompent le DAG avant l’étape suivante. Cet instantané est renouvelé lors de la publication des dashboards.']
-    save('visualization','sp-monitor-note',{'title':'État Bronze / Silver / Gold','visState':json.dumps({'type':'markdown','params':{'markdown':'\n'.join(lines),'openLinksInNewTab':True},'aggs':[]}),'uiStateJSON':'{}','kibanaSavedObjectMeta':{'searchSourceJSON':'{}'}})
-    dashboard('scipulse-monitoring','SciPulse — Monitoring Bronze → Silver → Gold',[('visualization','sp-monitor-note',0,0,48,22),('visualization','sp-count',0,22,16,8),('visualization','sp-coverage',16,22,16,8),('visualization','sp-hn',32,22,16,8)],'Manifestes qualité et compteurs Gold ; les erreurs sont détaillées dans Airflow et GX')
-    response=api('POST','/api/saved_objects/_export',json={'objects':[{'type':'dashboard','id':'scipulse-insights'},{'type':'dashboard','id':'scipulse-monitoring'}],'includeReferencesDeep':True,'excludeExportDetails':True})
-    (ROOT/'artifacts/kibana_dashboards.ndjson').write_text(response.text,encoding='utf-8')
+    publish_monitoring()
+    export_dashboards()
     print('Dashboards : /app/dashboards#/view/scipulse-insights et /app/dashboards#/view/scipulse-monitoring')
-if __name__=='__main__':main()
+
+
+def publish_monitoring():
+    # Le mode monitoring ne réécrit pas le dashboard d'exploration personnel.
+    try:
+        api('GET', f'/api/data_views/data_view/{VIEW}')
+    except requests.HTTPError as exc:
+        if exc.response.status_code != 404:
+            raise
+        api('POST', '/api/data_views/data_view',
+            json={'data_view': {'id': VIEW, 'title': 'arxiv-papers-enriched', 'name': 'SciPulse · Gold enrichi'}})
+    metric('sp-count','Articles analysés')
+    metric('sp-coverage','Articles reliés à OpenAlex',query='citation_matched: true')
+    metric('sp-hn','Articles avec mention HN observée',query='hn_matched: true')
+    snapshot = collect_snapshot()
+    save('visualization','sp-monitor-note', {
+        'title':'Volumes, qualité GX et fraîcheur Bronze / Silver / Gold',
+        'visState':json.dumps({'type':'markdown','params':{'markdown':markdown(snapshot),'openLinksInNewTab':True},'aggs':[]}),
+        'uiStateJSON':'{}','kibanaSavedObjectMeta':{'searchSourceJSON':'{}'}})
+    dashboard('scipulse-monitoring','SciPulse — Monitoring Bronze → Silver → Gold',[
+        ('visualization','sp-monitor-note',0,0,48,43),
+        ('visualization','sp-count',0,43,16,8),
+        ('visualization','sp-coverage',16,43,16,8),
+        ('visualization','sp-hn',32,43,16,8)],
+        'Volumes, taux d’échec des attentes GX, dates et ancienneté ; renouvelé après chaque cycle HN')
+    save_report('monitoring', snapshot)
+    print('Monitoring publié :', snapshot['published_at'], flush=True)
+
+
+def export_dashboards():
+    objects = []
+    for ident in ['scipulse-insights', 'scipulse-monitoring']:
+        try:
+            api('GET', f'/api/saved_objects/dashboard/{ident}')
+        except requests.HTTPError as exc:
+            if exc.response.status_code != 404:
+                raise
+        else:
+            objects.append({'type':'dashboard','id':ident})
+    response=api('POST','/api/saved_objects/_export',json={'objects':objects,'includeReferencesDeep':True,'excludeExportDetails':True})
+    (ROOT/'artifacts').mkdir(exist_ok=True)
+    (ROOT/'artifacts/kibana_dashboards.ndjson').write_text(response.text,encoding='utf-8')
+
+
+if __name__=='__main__':
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--monitoring-only',action='store_true')
+    args=parser.parse_args()
+    if args.monitoring_only:
+        publish_monitoring()
+        export_dashboards()
+    else:
+        main()

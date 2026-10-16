@@ -1,5 +1,6 @@
 # Résultats — du pipeline au dashboard Kibana augmenté
 
+Périmètre : résultats produits jusqu’au dashboard Kibana augmenté inclus.
 
 Exécution Spark : `8deb9621-f960-41b5-8e00-04841edec07a`
 
@@ -13,7 +14,7 @@ Exécution Spark : `8deb9621-f960-41b5-8e00-04841edec07a`
 ## Qualité et nettoyage
 
 - **arxiv** : 100,075 lignes Bronze, 100,075 lignes Silver, 0 doublons de clé détectés ; qualité : 7/7 contrôles réussis.
-- **hn** : 6,998 lignes Bronze, 1,019 lignes Silver, 5979 doublons de clé détectés ; qualité : 6/6 contrôles réussis.
+- **hn** : 7,898 lignes Bronze, 1,043 lignes Silver, 6855 doublons de clé détectés ; qualité : 6/6 contrôles réussis.
 - **citations** : 5,030 lignes Bronze, 4,970 lignes Silver, 60 doublons de clé détectés ; qualité : 5/5 contrôles réussis.
 
 Les compteurs Silver sont ceux des manifestes lus à la génération du rapport ; le polling HN peut les actualiser après le calcul Spark.
@@ -86,16 +87,33 @@ hn_score >= 50 and citation_count < 10
 
 Ce filtre sélectionne les articles populaires sur HN et peu cités parmi ceux dont les citations sont connues. Les seuils 50 et 10 sont des choix de démonstration.
 
-Les deux filtres ont été vérifiés dans Kibana par l'utilisatrice au cours de la revue. Le rapport navigateur enregistré dans `reports/browser_checks.json` ne relevait aucune erreur visible sur le dashboard et confirmait 4 063 articles pour le filtre `primary_category: "cs.AI"`. Ce rapport décrit une vérification antérieure, pas une surveillance continue.
+Les deux filtres sélectionnent respectivement 881 et 3 articles dans les captures. Le rapport navigateur enregistré dans `reports/browser_checks.json` ne relevait aucune erreur visible sur le dashboard et confirmait 4 063 articles pour le filtre `primary_category: "cs.AI"`. Ce rapport décrit une vérification antérieure, pas une surveillance continue.
 
-**Limite :** le tableau de croissance utilise `growth_pct`, calculé sur les publications. Il ne classe pas les sous-domaines selon une croissance combinée des citations et du signal HN. Ce cas d'usage, proposé comme exemple dans le brief, n'est donc pas démontré par ce panneau.
+**Limite :** le tableau de croissance utilise `growth_pct`, calculé sur les publications. Il ne classe pas les sous-domaines selon une croissance combinée des citations et du signal HN. Le panneau ne mesure donc pas cette croissance combinée.
 
-## Captures personnelles réalisées
+## Captures du dashboard
 
-Les six captures `scipulse-kibana0.png` à `scipulse-kibana5.png` ont été examinées. Voir [leur inventaire](../artifacts/screenshots/README.md). Les résultats filtrés visibles sont de 881 articles très cités sans HN observé et 3 articles populaires HN peu cités.
+Les six captures `scipulse-kibana0.png` à `scipulse-kibana5.png` illustrent les panneaux et les résultats filtrés. Voir [leur inventaire](../artifacts/screenshots/README.md). Les résultats filtrés visibles sont de 881 articles très cités sans HN observé et 3 articles populaires HN peu cités.
 
 ![Vue des compteurs](../artifacts/screenshots/scipulse-kibana0.png)
 
 ![Articles très cités sans HN observé : 881](../artifacts/screenshots/scipulse-kibana4.png)
 
 ![Articles populaires HN peu cités : 3](../artifacts/screenshots/scipulse-kibana5.png)
+
+
+## Monitoring du pipeline
+
+Le dashboard [Monitoring Bronze → Silver → Gold](http://localhost:5601/app/dashboards#/view/scipulse-monitoring) affiche les volumes contrôlés, les taux d'échec des attentes GX et la fraîcheur : derniers dépôts Bronze, derniers Parquet Silver, contrôles GX et dernier calcul Gold, avec leurs anciennetés.
+
+Le taux est calculé sur les attentes, pas sur les lignes. Les rapports absents restent indisponibles. Une Silver en échec ne remplace pas le dernier Parquet valide.
+
+Le monitoring est renouvelé après chaque cycle HN, planifié toutes les cinq minutes, et après le pipeline principal. Il reste un instantané ; les anciennetés sont évaluées à sa publication. Les données sont lues depuis MinIO et Elasticsearch.
+
+Les 16 tests pipeline/monitoring passent dans Docker. Le rapport navigateur décrit les contrôles d'affichage. Les résultats sont dans `reports/monitoring_validation.json` et les mesures dans `reports/monitoring.json`. Voir [MONITORING.md](../docs/MONITORING.md). Les captures du monitoring sont enregistrées sous `monitoring-volumes-qualite.png` et `monitoring-fraicheur.png` dans `artifacts/screenshots/`. Elles présentent les volumes et taux GX, puis les dates et anciennetés.
+
+
+## Validation du pipeline
+
+Tests réussis dans Docker : 20/20. Les compteurs Spark et Elasticsearch concordent sur les trois requêtes analytiques.
+La procédure et ses limites sont décrites dans [VALIDATION.md](VALIDATION.md). Le test TF-IDF enregistré contrôle la transformation de trois textes, sans évaluation prédictive.

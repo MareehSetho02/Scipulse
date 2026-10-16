@@ -1,0 +1,203 @@
+{
+  "articles": 100075,
+  "citations_matched": 4958,
+  "hn_matched": 81,
+  "both_matched": 13,
+  "citation_coverage": 0.049542842867849116,
+  "hn_coverage": 0.0008093929552835373,
+  "weights": {
+    "citations": 0.5,
+    "hn": 0.3,
+    "recency": 0.2
+  },
+  "max_citations": 7717,
+  "max_hn_score": 2408,
+  "tfidf_features": 2048,
+  "tfidf_holdout_passed": true,
+  "run_id": "8deb9621-f960-41b5-8e00-04841edec07a",
+  "top_articles": [
+    {
+      "arxiv_id": "2501.12948",
+      "title": "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning",
+      "primary_category": "cs.CL",
+      "citation_count": 1107,
+      "hn_score": 1351,
+      "impact_score": 81.082,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "1608.08225",
+      "title": "Why does deep and cheap learning work so well?",
+      "primary_category": "cond-mat.dis-nn",
+      "citation_count": 392,
+      "hn_score": 434,
+      "impact_score": 59.4114,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2308.00676",
+      "title": "Electronic structure of the putative room-temperature superconductor Pb$_9$Cu(PO$_4$)$_6$O",
+      "primary_category": "cond-mat.supr-con",
+      "citation_count": 43,
+      "hn_score": 551,
+      "impact_score": 55.9885,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2307.16802",
+      "title": "Semiconducting transport in Pb$_{10-x}$Cu$_x$(PO$_4$)$_6$O sintered from Pb$_2$SO$_5$ and Cu$_3$P",
+      "primary_category": "cond-mat.supr-con",
+      "citation_count": 36,
+      "hn_score": 613,
+      "impact_score": 55.425,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2304.12306",
+      "title": "Segment Anything in Medical Images",
+      "primary_category": "eess.IV",
+      "citation_count": 2996,
+      "hn_score": 0,
+      "impact_score": 54.6881,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2510.02861",
+      "title": "The European Union general data protection regulation: what it is and what it means",
+      "primary_category": "cs.CY",
+      "citation_count": 790,
+      "hn_score": 0,
+      "impact_score": 53.5362,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "1612.00796",
+      "title": "Overcoming catastrophic forgetting in neural networks",
+      "primary_category": "cs.LG",
+      "citation_count": 7717,
+      "hn_score": 0,
+      "impact_score": 52.778,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "1709.04875",
+      "title": "Spatio-Temporal Graph Convolutional Networks: A Deep Learning Framework for Traffic Forecasting",
+      "primary_category": "cs.LG",
+      "citation_count": 5174,
+      "hn_score": 0,
+      "impact_score": 51.0163,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2308.01192",
+      "title": "Observation of zero resistance above 100$^\\circ$ K in Pb$_{10-x}$Cu$_x$(PO$_4$)$_6$O",
+      "primary_category": "cond-mat.supr-con",
+      "citation_count": 13,
+      "hn_score": 779,
+      "impact_score": 50.9299,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2108.10984",
+      "title": "Crypto Wash Trading",
+      "primary_category": "econ.GN",
+      "citation_count": 25,
+      "hn_score": 572,
+      "impact_score": 49.8145,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2310.04153",
+      "title": "Fair coins tend to land on the same side they started: Evidence from 350,757 flips",
+      "primary_category": "math.HO",
+      "citation_count": 11,
+      "hn_score": 377,
+      "impact_score": 47.6596,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2112.03178",
+      "title": "Student of Games: A unified learning algorithm for both perfect and imperfect information games",
+      "primary_category": "cs.AI",
+      "citation_count": 21,
+      "hn_score": 364,
+      "impact_score": 47.5627,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "1801.07860",
+      "title": "Scalable and accurate deep learning for electronic health records",
+      "primary_category": "cs.CY",
+      "citation_count": 2619,
+      "hn_score": 0,
+      "impact_score": 47.4578,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2203.07814",
+      "title": "Competition-Level Code Generation with AlphaCode",
+      "primary_category": "cs.PL",
+      "citation_count": 1032,
+      "hn_score": 0,
+      "impact_score": 46.6034,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "1906.08101",
+      "title": "Pre-Training with Whole Word Masking for Chinese BERT",
+      "primary_category": "cs.CL",
+      "citation_count": 1623,
+      "hn_score": 0,
+      "impact_score": 45.9138,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2501.00536",
+      "title": "Phase behavior of Cacio e Pepe sauce",
+      "primary_category": "cond-mat.soft",
+      "citation_count": 4,
+      "hn_score": 381,
+      "impact_score": 45.8751,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2209.06899",
+      "title": "Out of One, Many: Using Language Models to Simulate Human Samples",
+      "primary_category": "cs.LG",
+      "citation_count": 752,
+      "hn_score": 0,
+      "impact_score": 45.831,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2405.00010",
+      "title": "A Review on Industrial Augmented Reality Systems for the Industry 4.0 Shipyard",
+      "primary_category": "cs.DC",
+      "citation_count": 446,
+      "hn_score": 0,
+      "impact_score": 45.7308,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "2102.01010",
+      "title": "Machine learning accelerated computational fluid dynamics",
+      "primary_category": "physics.flu-dyn",
+      "citation_count": 1044,
+      "hn_score": 0,
+      "impact_score": 45.2097,
+      "score_is_lower_bound": false
+    },
+    {
+      "arxiv_id": "1805.03409",
+      "title": "N-BaIoT: Network-based Detection of IoT Botnet Attacks Using Deep Autoencoders",
+      "primary_category": "cs.CR",
+      "citation_count": 1648,
+      "hn_score": 0,
+      "impact_score": 45.0782,
+      "score_is_lower_bound": false
+    }
+  ],
+  "gold_index": "arxiv-papers-enriched",
+  "join_strategy": "broadcast dimensions after aggregation and DOI deduplication",
+  "limits": "Citations not queried or not found remain null. No HN mention means not observed in this collection. Supplement of HN-linked articles biases popularity estimates. Recency uses wall-clock date."
+}

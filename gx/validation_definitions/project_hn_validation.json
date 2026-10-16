@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "3a65a47d-e367-4277-bde9-ec2fe1353919",
+      "name": "project_hn_data"
+    },
+    "batch_definition": {
+      "id": "00dbc8ff-65b6-459b-93a7-921fd72d6886",
+      "name": "all_rows"
+    },
+    "datasource": {
+      "id": "a30d2b20-701a-4e6b-b00f-d0a2b620d3fa",
+      "name": "project_hn_pandas"
+    }
+  },
+  "id": "f7f0fdbf-d583-44f7-8599-52f2c9936572",
+  "name": "project_hn_validation",
+  "suite": {
+    "id": "d75a357a-fa12-471d-9d88-f31357a6d444",
+    "name": "project_hn_quality_suite"
+  }
+}

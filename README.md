@@ -1,8 +1,8 @@
-# SciPulse — Du pipeline de données au dashboard Kibana augmenté
+# SciPulse — Pipeline, dashboard augmenté et monitoring
 
 SciPulse rapproche les publications ArXiv, les mentions Hacker News et les citations OpenAlex pour calculer des indicateurs de veille scientifique.
 
-**Périmètre documenté : de l'infrastructure au dashboard Kibana augmenté, inclus.** Ce document ne revendique pas la finalisation de l'ensemble du brief.
+**Périmètre documenté : de l'infrastructure au dashboard Kibana augmenté et à son monitoring.** 
 
 ## Parcours des données
 
@@ -135,7 +135,7 @@ GET _cat/indices/arxiv-papers-enriched?v
 GET arxiv-papers-enriched/_count
 ```
 
-Le compteur observé pendant la revue était de **100 075 documents**.
+L'index contient **100 075 documents** dans l'exécution enregistrée.
 
 Le DAG `scipulse_arxiv_pipeline` utilise un `BashOperator` pour soumettre `spark_gold` au master `spark://spark:7077`. Les Silver et dbt doivent réussir avant Spark. La validation Gold puis la publication Kibana suivent le calcul. Le DAG prévoit une nouvelle tentative en cas d'échec.
 
@@ -161,9 +161,9 @@ Pour retrouver les articles populaires sur HN et peu cités :
 hn_score >= 50 and citation_count < 10
 ```
 
-Ces deux filtres ont été vérifiés dans Kibana par l'utilisatrice pendant la revue. Les seuils sont des choix de démonstration. Une absence de HN n'établit pas qu'un article n'a jamais été discuté ; une citation inconnue ne signifie pas zéro citation.
+Les filtres sélectionnent respectivement 881 et 3 articles dans l'exécution enregistrée. Les seuils sont des choix de démonstration. Une absence de HN n'établit pas qu'un article n'a jamais été discuté ; une citation inconnue ne signifie pas zéro citation.
 
-La vérification navigateur enregistrée dans `reports/browser_checks.json` ne relevait aucune erreur visible et confirmait 4 063 articles sous le filtre `primary_category: "cs.AI"`. Les six captures personnelles présentes sont répertoriées dans [le dossier des captures](artifacts/screenshots/README.md).
+La vérification navigateur enregistrée dans `reports/browser_checks.json` ne relevait aucune erreur visible et confirmait 4 063 articles sous le filtre `primary_category: "cs.AI"`. Les six captures sont répertoriées dans [le dossier des captures](artifacts/screenshots/README.md).
 
 **Limite du panneau de croissance :** il mesure la croissance des publications par catégorie. Il ne démontre pas la croissance des sous-domaines selon les deux signaux citations/HN combinés.
 
@@ -202,28 +202,43 @@ Les notebooks contiennent des cellules de reproduction sans sorties Jupyter enre
 
 Les supports de cours restent distincts de cette documentation. Le parcours des TP 1 à 4 est décrit dans `docs/TP_01_04_corrige.md`.
 
+## Monitoring du pipeline
+
+Le dashboard http://localhost:5601/app/dashboards#/view/scipulse-monitoring présente maintenant les volumes Bronze/Silver contrôlés, le nombre de documents Gold, les attentes GX échouées et évaluées, le taux d'échec, les dates de dépôt et de transformation et leur ancienneté.
+
+Les taux et volumes proviennent des manifestes MinIO ; les dates de dépôt sont lues sur les objets MinIO et la date Gold dans Elasticsearch. Un rapport absent est indiqué indisponible. Le taux GX mesure des attentes en échec, pas des lignes erronées. Une validation Silver en échec ne remplace pas le dernier Parquet valide.
+
+Le DAG HN republie le monitoring après chaque cycle (planifié toutes les cinq minutes), y compris après un échec Silver grâce à `all_done`. Le pipeline principal le publie aussi en fin d'exécution. L'instantané et les anciennetés sont calculés à la publication : recharger le dashboard pour voir la dernière version.
+
+La lecture complète, les limites, les tests et la commande de publication ciblée sont détaillés dans [docs/MONITORING.md](docs/MONITORING.md). La vérification dans Docker couvre 16 tests du pipeline et du monitoring ; l'affichage a été vérifié dans le navigateur. Les données du dashboard augmenté ont été conservées.
+
+Fichiers ajoutés : `src/pipeline/monitoring.py`, `tests/test_monitoring.py`. Fichiers adaptés : `src/pipeline/dashboards.py` et `airflow/dags/dag_hn_poller.py`. Les preuves sont `reports/monitoring.json` et `reports/monitoring_validation.json`.
+
+Les captures du monitoring sont enregistrées sous `monitoring-volumes-qualite.png` et `monitoring-fraicheur.png` dans `artifacts/screenshots/`. Elles présentent les volumes et taux GX, puis les dates et anciennetés.
+
 ## Documents et illustrations à versionner
 
-Le brief demande une analyse de données avec statistiques descriptives et visualisations, une explication du pipeline Spark et une procédure de validation avec captures Kibana. Les noms de fichiers sont un choix d'organisation.
+La documentation regroupe l'analyse de qualité, les statistiques descriptives, les visualisations, les méthodes Spark et les procédures de validation. Les captures illustrent les résultats dans Kibana.
 
 Les deux notebooks et les documents de `docs/` couvrent ces explications. Les quatre graphiques de `artifacts/figures/` illustrent les catégories, les publications, la couverture et les scores ; ils sont référencés dans les documents et doivent les accompagner tant qu'ils ne sont pas remplacés par d'autres visualisations.
 
-`build_deliverables.py` est un outil facultatif de génération des documents et graphiques. Il n'est appelé ni par le DAG ni par les commandes `project.ps1` : il peut rester hors de Git. Les documents générés peuvent être conservés sans lui.
 
-Les six captures personnelles de l'utilisatrice, `scipulse-kibana0.png` à `scipulse-kibana5.png`, sont décrites dans [artifacts/screenshots/README.md](artifacts/screenshots/README.md). Les captures 4 et 5 montrent les filtres et leurs résultats : 881 et 3 articles. Ne pas confondre les captures avec les graphiques de `figures/`.
+Les six captures du dashboard, `scipulse-kibana0.png` à `scipulse-kibana5.png`, sont décrites dans [artifacts/screenshots/README.md](artifacts/screenshots/README.md). Les captures 4 et 5 montrent les filtres et leurs résultats : 881 et 3 articles. 
 
-Les commandes d'ajout explicites, par étape, se trouvent dans [docs/PLAN_COMMITS.md](docs/PLAN_COMMITS.md). Les données, le dump, les Parquet, les caches, les logs, `.env` et `.venv/` ne font pas partie de cette sélection.
+Les commandes d'ajout explicites, par étape, se trouvent dans [docs/PLAN_COMMITS.md](docs/PLAN_COMMITS.md).
 
-## État de la revue et limites
+## Validation et limites
 
-Le fonctionnement de la Gold, du déclenchement Spark par Airflow et des deux filtres du dashboard augmenté a été vérifié. Cela ne signifie pas que chaque exigence du brief est intégralement démontrée.
+La [procédure de validation](docs/VALIDATION.md) décrit les 20 tests exécutés dans Docker, les sept contrôles Gold et la comparaison des requêtes entre le résumé Spark et Elasticsearch. Les preuves sont conservées dans `reports/tests_validation.xml`, `reports/gold_validation.json` et `reports/final_validation.json`.
+
+Les rapports de validation décrivent l'écriture Gold, l'exécution Spark dans Airflow et les résultats des filtres du dashboard augmenté.
 
 - Le corpus traité est un échantillon et un complément HN, pas le dump complet.
 - L'ingestion OpenAlex utilise des appels groupés par DOI ; elle n'est pas une collecte exhaustive par pagination de tout OpenAlex.
 - La vélocité récente est calculée par article. Une agrégation de vélocité par catégorie n'est pas exposée explicitement dans le dashboard actuel.
-- Le tableau de croissance porte sur les publications ; les trois cas d'usage du brief sont proposés comme exemples, sans imposer trois panneaux précis.
-- Le monitoring existe, mais le taux d'erreur GX et la fraîcheur ne sont pas présentés comme des séries de mesures détaillées. Le rapport Bronze/Silver affiché est un instantané.
+- Le tableau de croissance porte sur les publications ; il ne combine pas l'évolution des citations et du signal HN.
+- Le monitoring publie un instantané avec taux GX et anciennetés. Il ne constitue pas un historique de séries temporelles ; les données évoluent à la publication, pas chaque seconde.
 - Les anciens index et scripts des TP restent distincts du pipeline Medallion ; leur existence ne prouve pas à elle seule une indexation intermédiaire issue de la Silver actuelle.
-- Les six captures personnelles du dashboard augmenté sont présentes et ont été examinées. Elles peuvent être ajoutées à Git ; elles ne constituent pas une capture du dashboard de monitoring.
+- Les six captures du dashboard augmenté illustrent les compteurs, les graphiques et les résultats filtrés. Elles ne représentent pas le dashboard de monitoring.
 
-Les extensions facultatives et le conditionnement du rendu ne sont pas décrits à cette étape.
+
