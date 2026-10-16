@@ -34,7 +34,6 @@ tqdm>=4.66                     # Barres de progression
 
 
 # Dépendances de développement hors Docker, pour figures et captures.
--r requirements.txt
 pyarrow>=15,<26
 matplotlib>=3.8,<4
 playwright==1.64.0
