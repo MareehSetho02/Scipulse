@@ -2,6 +2,8 @@
 
 ## Périmètre
 
+La dernière suite complète compte **23 tests réussis**, sans échec ni test ignoré : les 20 tests initiaux, un test Spark sur les citations par catégorie et deux cas sur l'intégrité du dump ArXiv. Les rapports sont `reports/tests_latest.xml` et `reports/latest_validation.json`. Ce dernier rassemble aussi les contrôles des rapports enregistrés pour le dump, les citations par catégorie et l'index issu de Silver ; il ne représente pas une nouvelle exécution complète du pipeline. Les résultats de 20 et 21 tests ci-dessous décrivent les vérifications antérieures.
+
 La validation couvre les transformations, les identifiants, la qualité Gold, la cohérence entre les sorties Spark et Elasticsearch, les requêtes analytiques et le monitoring. Les commandes de contrôle ci-dessous ne relancent ni la collecte ni le calcul Spark. Le contrôle Gold publie ses résultats dans MinIO et les Data Docs, sans réécrire les articles Elasticsearch.
 
 ## 1. Tests sur des cas contrôlés
@@ -95,3 +97,16 @@ Cette validation ne constitue pas un nouveau démarrage depuis des volumes vierg
 git add -- docs/VALIDATION.md
 git add -- reports/tests_validation.xml reports/final_validation.json reports/gold_validation.json
 ```
+# Validation complémentaire : citations par catégorie
+
+## Conservation du dump ArXiv complet
+
+`tests/test_arxiv_snapshot.py` vérifie la conservation exacte des octets, y compris les espaces et fins de ligne, ainsi que le rejet d'un contenu corrompu de même taille. Les tests ciblés Bronze, qualité et monitoring passent : 18 tests réussis. La vérification réelle du dump est consignée dans `reports/bronze_arxiv_snapshot.json` après comparaison SHA-256 du fichier local avec une relecture complète depuis MinIO. Aucun retraitement Silver ou Gold n'est nécessaire pour cette conservation.
+
+Le test `tests/test_category_velocity.py` vérifie les sommes par catégorie, le nombre d'articles observés, la moyenne, l'accélération, le taux de croissance, les années manquantes et le dénominateur nul. Avec les bibliothèques Python Spark activées, la suite complète passe : **21 tests réussis**. Les rapports antérieurs à cet ajout conservent leurs résultats de 20 tests.
+
+```powershell
+docker exec -e PYTHONPATH=/opt/airflow:/opt/spark/python/lib/pyspark.zip:/opt/spark/python/lib/py4j-0.10.9.7-src.zip -e PYSPARK_SUBMIT_ARGS="--driver-memory 512m pyspark-shell" scipulse-airflow-sched python -m pytest tests -q
+```
+
+Sans les bibliothèques Spark, ce test est ignoré explicitement. Le calcul ciblé sur Silver produit 1 466 lignes pour 128 catégories dans `citations-clean/analytics/category_yearly_velocity/`, sans réindexation Gold. Le rapport est enregistré dans `reports/category_velocity.json`. L'intégration au job Gold est ajoutée au code ; le pipeline complet n'a pas été relancé pour cette vérification.

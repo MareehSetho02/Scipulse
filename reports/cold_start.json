@@ -1,0 +1,49 @@
+{
+  "project": "scipulse-repro-306f438a56",
+  "source_commit": "0fefd839f7ec8dcd58a2a3477d5fa385f280154f",
+  "fresh_volumes": true,
+  "source": "git archive HEAD",
+  "cached_images": true,
+  "image_build_retested": false,
+  "full_data_pipeline_retested": false,
+  "work_gold_count_before": 100075,
+  "success": true,
+  "probes": {
+    "elasticsearch": 200,
+    "kibana": 200,
+    "airflow": 200,
+    "minio": 200,
+    "alive_workers": 2,
+    "buckets": [
+      "arxiv-clean",
+      "arxiv-raw",
+      "citations-clean",
+      "citations-raw",
+      "hn-clean",
+      "hn-raw",
+      "pipeline-metrics"
+    ],
+    "fresh_buckets_empty": true,
+    "fresh_gold_absent": true,
+    "dbt_schemas": [
+      "marts",
+      "staging"
+    ],
+    "dags_paused": {
+      "scipulse_arxiv_pipeline": true,
+      "scipulse_hn_poller": true
+    }
+  },
+  "export_tests_output": "....................                                                     [100%]\n20 passed in 16.09s\n",
+  "export_tests_passed": true,
+  "isolated_start_success": true,
+  "isolated_cleanup_success": true,
+  "restore_command_success": true,
+  "work_gold_count_after": 100075,
+  "work_gold_preserved": true,
+  "work_dag_pause_states_restored": true,
+  "initial_restore_error": "Services de travail non prêts après restauration",
+  "startup_pid_fix": "Airflow webserver removes its stale PID before startup; docker-compose.project.yml updated locally after source export.",
+  "airflow_web_restart_retested": true,
+  "recovered_at": "2026-10-16T23:12:24.968148+00:00"
+}

@@ -53,7 +53,7 @@ La construction Docker et l'exécution utilisent `docker/runtime/requirements.tx
 
 `src/pipeline/bronze.py` écrit les données brutes en JSONL dans les buckets `arxiv-raw`, `hn-raw` et `citations-raw`.
 
-- **ArXiv** : sélection par échantillonnage réservoir de 100 000 articles CS/stat.ML, avec graine 42, complétée par des articles réellement référencés sur HN. Le corpus obtenu contient 100 075 articles. Un corpus local déjà préparé peut être réutilisé.
+- **ArXiv** : conservation du dump complet sans transformation dans `arxiv-raw/snapshots/<sha256>/`, avec vérification SHA-256 par relecture de l'objet MinIO. Un échantillon de travail distinct est conservé dans `arxiv-raw/project/arxiv.jsonl` : 100 000 articles CS/stat.ML sélectionnés par réservoir avec graine 42, complétés par des références HN, soit 100 075 articles. Un corpus de travail déjà préparé peut être réutilisé après archivage du dump complet. Sans dump local, la collecte télécharge l'archive Kaggle ; prévoir plusieurs Go d'espace disque et un accès réseau.
 - **Hacker News** : collecte des stories via Firebase et d'un historique de liens ArXiv via Algolia. Les collectes Firebase sont horodatées dans MinIO. Le polling sans collecte historique conserve l'objet Algolia précédent.
 - **OpenAlex** : recherche sur un lot initial de 5 000 DOI du corpus ArXiv et un complément lié à HN. Les résultats sont mis en cache pour limiter les appels réseau. L'absence de résultat signifie « citations inconnues ».
 
@@ -235,10 +235,20 @@ Les rapports de validation décrivent l'écriture Gold, l'exécution Spark dans 
 
 - Le corpus traité est un échantillon et un complément HN, pas le dump complet.
 - L'ingestion OpenAlex utilise des appels groupés par DOI ; elle n'est pas une collecte exhaustive par pagination de tout OpenAlex.
-- La vélocité récente est calculée par article. Une agrégation de vélocité par catégorie n'est pas exposée explicitement dans le dashboard actuel.
+- La vélocité récente est calculée par article. Les citations annuelles par catégorie, leur moyenne par article observé et leur évolution sont enregistrées dans `citations-clean/analytics/category_yearly_velocity/` ; cette table n'est pas encore exposée dans le dashboard actuel.
 - Le tableau de croissance porte sur les publications ; il ne combine pas l'évolution des citations et du signal HN.
 - Le monitoring publie un instantané avec taux GX et anciennetés. Il ne constitue pas un historique de séries temporelles ; les données évoluent à la publication, pas chaque seconde.
 - Les anciens index et scripts des TP restent distincts du pipeline Medallion ; leur existence ne prouve pas à elle seule une indexation intermédiaire issue de la Silver actuelle.
 - Les six captures du dashboard augmenté illustrent les compteurs, les graphiques et les résultats filtrés. Elles ne représentent pas le dashboard de monitoring.
+
+## Reproductibilité et rendu
+
+La [procédure de reproductibilité et d'export](docs/REPRODUCTIBILITE_ET_RENDU.md) décrit le démarrage Docker, le test d'un export Git sur volumes neufs et le contenu du ZIP.
+
+L'export du commit de référence a démarré sur des volumes isolés : services disponibles, deux workers Spark, sept buckets vides, schémas dbt présents et DAGs en pause. Ses 20 tests ont réussi. Le rapport `reports/cold_start.json` conserve les vérifications et l'état de restauration de la stack de travail.
+
+Ce test utilise les images Docker déjà disponibles. Il ne constitue pas une reconstruction sans cache ni une nouvelle exécution complète des données sur les volumes neufs.
+
+`package_project.py` produit `artifacts/scipulse_projet4_AIA01.zip` avec le code, les configurations, les documents, les preuves, les huit captures et le corpus préparé. Le nom est provisoire. Les secrets locaux, l'environnement virtuel et le dump complet sont exclus ; les empreintes des fichiers exportés sont dans `reports/delivery_manifest.json`.
 
 

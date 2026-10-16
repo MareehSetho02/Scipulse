@@ -4,6 +4,7 @@
 | Fonctionnalité | Fichiers ou résultats |
 |---|---|
 | Infrastructure Docker | `docker-compose.yml`, `docker-compose.project.yml`, `docker/runtime/` |
+| Démarrage sur volumes neufs | Export Git isolé : services, deux workers, sept buckets vides, DAGs en pause et 20 tests ; détails dans `reports/cold_start.json` |
 | Trois sources | ArXiv, HN Firebase/Algolia, OpenAlex ; `src/pipeline/bronze.py` et `reports/bronze_*.json` |
 | Bronze JSONL | Buckets `arxiv-raw`, `hn-raw`, `citations-raw` |
 | Silver séparées en Parquet | `src/pipeline/silver.py` ; buckets `arxiv-clean`, `hn-clean`, `citations-clean` |
@@ -19,7 +20,7 @@
 | Score d'impact | Citations, popularité HN et récence ; pondérations justifiées dans la méthodologie |
 | Exécution entre workers | Deux workers Docker sur un même hôte : 108 et 55 tâches terminées, aucune en échec ; `reports/spark_cluster_execution.json` |
 | Écriture des résultats Spark | Connecteur Elasticsearch-Hadoop vers `arxiv-papers-enriched` ; résumé dans `reports/gold_summary.parquet` |
-| Tests du code | 20 tests réussis dans Docker : quatre TP, huit pipeline et huit monitoring ; rapport `reports/tests_validation.xml` |
+| Tests du code | 23 tests réussis dans Docker, dont les contrôles Spark par catégorie et d'intégrité du dump ; rapports `reports/tests_latest.xml` et `reports/latest_validation.json`. Le rapport initial de 20 tests est conservé. |
 
 ## Gold, orchestration et dashboard
 
@@ -44,9 +45,9 @@ Les rapports et captures décrivent des vérifications enregistrées ; ils ne ga
 | Document ou notebook sur Spark | Méthodologie et notebook Spark : source, jointures, indicateurs et score |
 | Procédure de validation et captures Kibana | Contrôles et filtres documentés ; six captures, dont les filtres affichant 881 et 3 résultats |
 | Volumes, taux d'erreur GX et fraîcheur dans le monitoring | Volumes contrôlés par source, taux d'échec des attentes, dernières écritures et contrôles et anciennetés ; publication après chaque cycle HN ; méthode et limites dans `docs/MONITORING.md` |
-| Exploration ArXiv du module 1 | Anciens index et TP présents ; leur provenance ne démontre pas automatiquement une indexation de la Silver Medallion actuelle |
-| Indicateurs temporels par catégorie | Croissance des publications par catégorie ; vélocité récente par article, sans agrégation par catégorie explicitement exposée |
-| Ingestion complète des données sources | Corpus ArXiv échantillonné ; appels OpenAlex groupés par DOI, sans pagination exhaustive |
+| Exploration ArXiv du module 1 | Index séparé `arxiv-papers-silver-7b2c13bd8aef` créé depuis la Silver : 100 075 documents, effectifs par catégorie vérifiés, recherches plein texte et temporelles exécutées. L'index historique `arxiv-papers` n'est pas remplacé. Voir [EXPLORATION_ARXIV.md](EXPLORATION_ARXIV.md). |
+| Indicateurs temporels par catégorie | Croissance des publications ; citations annuelles par catégorie, moyenne par article observé, accélération et taux d'évolution entre années consécutives dans MinIO ; table de citations non exposée dans Kibana |
+| Ingestion complète des données sources | Dump ArXiv complet conservé sans transformation dans Bronze et vérifié par SHA-256 ; traitements Silver/Gold limités à l'échantillon. Appels OpenAlex groupés par DOI, sans pagination exhaustive |
 
 Le dashboard permet de filtrer les articles par citations et popularité HN. Le panneau de croissance mesure uniquement l'évolution des publications, sans indicateur combiné citations/HN.
 
@@ -61,5 +62,7 @@ Le dashboard permet de filtrer les articles par citations et popularité HN. Le 
 La preuve Spark est issue du calcul exécuté après reprise de Docker. Elle ne constitue pas une validation sur plusieurs machines physiques.
 
 ## Vérification du monitoring
+
+La procédure de démarrage et le contenu de l'export sont décrits dans [REPRODUCTIBILITE_ET_RENDU.md](REPRODUCTIBILITE_ET_RENDU.md). Le test sur volumes neufs utilise des images existantes et ne relance pas le traitement complet des données.
 
 Le rapport `reports/monitoring_validation.json` conserve les contrôles navigateur et la comparaison des attributs du dashboard augmenté avant/après la publication ciblée. Les taux GX, les dates UTC et les anciennetés sont visibles sans erreur de panneau. `reports/monitoring.json` contient le dernier instantané. Les captures du monitoring sont enregistrées sous `monitoring-volumes-qualite.png` et `monitoring-fraicheur.png` dans `artifacts/screenshots/`. Elles présentent les volumes et taux GX, puis les dates et anciennetés.

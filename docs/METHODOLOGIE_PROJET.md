@@ -14,6 +14,8 @@ OpenAlex fournit le signal de citations académiques. Son API permet de recherch
 
 Les enregistrements Bronze sont conservés sans normalisation. Le nettoyage Silver harmonise les identifiants, catégories, espaces, DOI et dates, puis déduplique par clé. Les résumés courts sont signalés.
 
+Pour ArXiv, le dump source complet est conservé octet pour octet dans `arxiv-raw/snapshots/<sha256>/<nom_source>`. Le SHA-256 calculé sur le fichier local est comparé à celui obtenu par relecture de l'objet MinIO ; un ETag multipart n'est pas utilisé comme empreinte du contenu. Le rapport `reports/bronze_arxiv_snapshot.json` conserve la taille, les empreintes et le chemin de l'objet. L'échantillon de travail reste séparé dans `arxiv-raw/project/arxiv.jsonl` et alimente la Silver actuelle. L'archivage complet ne signifie donc pas que Spark traite l'intégralité du dump.
+
 Les suites contrôlent identifiants présents/uniques, types HN, scores non négatifs, dates présentes, titres non vides et volume non nul. La suite citations contrôle DOI, identifiant OpenAlex et citations non négatives. Un score absent sur un commentaire est autorisé ; une absence de notice académique est conservée comme inconnue. Les Data Docs contiennent les résultats mesurés.
 
 ## Jointures et couverture
@@ -33,6 +35,12 @@ Un test hors ajustement transforme trois textes nouveaux, dont un texte vide et 
 Les fenêtres Spark `lag` mesurent la croissance annuelle du nombre de publications par catégorie et l'évolution annuelle des citations. Une croissance n'est calculée que pour des années consécutives. La dernière année peut être incomplète : la comparer directement à une année complète serait trompeur. Les tendances décrivent l'échantillon et non l'intégralité d'ArXiv.
 
 La vélocité est la moyenne annuelle des citations observées sur l'année courante et la précédente (`recent_citations / 2`). Pour l'année courante, cette valeur n'est pas annualisée. La date d'observation des citations est conservée.
+
+Par catégorie principale et année de citation, Spark additionne les compteurs annuels OpenAlex des articles rapprochés par DOI. La sortie `s3a://citations-clean/analytics/category_yearly_velocity/` contient `category_citations` (citations observées par an), `observed_articles`, `citations_per_observed_article`, puis `citation_acceleration` et `citation_growth_pct` calculés avec `lag`. L'accélération est la différence avec l'année précédente ; le taux d'évolution exige un total précédent strictement positif. Les deux restent nuls en l'absence d'année consécutive. Une année absente n'est pas transformée en zéro. Ces indicateurs décrivent les articles couverts par OpenAlex, sans extrapolation aux articles non rapprochés. Une même notice DOI associée à plusieurs articles ArXiv est comptée pour chacun ; les volumes sont donc des sommes par article ArXiv, pas des citations uniques. L'année courante est partielle et les changements de couverture entre années peuvent influencer les comparaisons.
+
+Le calcul est intégré au job Gold. L'option `--category-velocity-only` recalcule uniquement cette sortie à partir de Silver et de l'historique annuel déjà exporté, sans réindexer Elasticsearch. Le dashboard actuel n'expose pas encore cette table.
+
+L'exécution ciblée a produit 1 466 couples catégorie/année pour 128 catégories. Le rapport `reports/category_velocity.json` contient le chemin MinIO et un extrait des résultats. Cette exécution utilise Spark local avec un cœur ; le traitement complet reste soumis au cluster par Airflow.
 
 ## Score d'impact composite
 
@@ -93,7 +101,7 @@ Les statistiques descriptives s'appuient sur quatre graphiques : catégories, pu
 
 Les six captures `scipulse-kibana0.png` à `scipulse-kibana5.png` illustrent le dashboard augmenté. Elles couvrent les compteurs, les graphiques, le classement et les deux filtres analytiques. La capture 4 affiche 881 articles très cités sans HN observé ; la capture 5 affiche 3 articles populaires HN et peu cités. Les filtres KQL sont visibles. Voir [l'inventaire des captures](../artifacts/screenshots/README.md).
 
-La vélocité récente décrite ici est calculée par article ; la croissance des publications est calculée par catégorie. Ces calculs ne constituent pas un classement des catégories par évolution combinée citations/HN. Le monitoring présente désormais les volumes contrôlés, le taux d'échec des attentes GX et les dates de dépôt, de publication Silver et de calcul Gold, avec leur ancienneté à la publication. Le taux vaut 100 × attentes échouées / attentes évaluées ; un rapport absent n'est pas assimilé à 0 %. La tâche HN `refresh_monitoring`, exécutée avec `all_done`, renouvelle cet instantané après chaque cycle planifié. Les méthodes et limites sont détaillées dans [MONITORING.md](MONITORING.md).
+La vélocité récente est calculée par article ; la croissance des publications et les compteurs annuels de citations sont calculés par catégorie. Ces calculs ne constituent pas un classement des catégories par évolution combinée citations/HN. Le monitoring présente désormais les volumes contrôlés, le taux d'échec des attentes GX et les dates de dépôt, de publication Silver et de calcul Gold, avec leur ancienneté à la publication. Le taux vaut 100 × attentes échouées / attentes évaluées ; un rapport absent n'est pas assimilé à 0 %. La tâche HN `refresh_monitoring`, exécutée avec `all_done`, renouvelle cet instantané après chaque cycle planifié. Les méthodes et limites sont détaillées dans [MONITORING.md](MONITORING.md).
 
 ## Références techniques
 

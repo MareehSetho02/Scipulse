@@ -1,0 +1,118 @@
+{
+  "output": "s3a://citations-clean/analytics/category_yearly_velocity/",
+  "rows": 1466,
+  "categories": 128,
+  "gold_reindexed": false,
+  "sample": [
+    {
+      "primary_category": "astro-ph.CO",
+      "year": 2012,
+      "category_citations": 5,
+      "observed_articles": 1,
+      "citations_per_observed_article": 5.0,
+      "previous_year": null,
+      "previous_citations": null,
+      "citation_acceleration": null,
+      "citation_growth_pct": null
+    },
+    {
+      "primary_category": "astro-ph.CO",
+      "year": 2013,
+      "category_citations": 7,
+      "observed_articles": 1,
+      "citations_per_observed_article": 7.0,
+      "previous_year": 2012,
+      "previous_citations": 5,
+      "citation_acceleration": 2,
+      "citation_growth_pct": 39.99999999999999
+    },
+    {
+      "primary_category": "astro-ph.CO",
+      "year": 2014,
+      "category_citations": 4,
+      "observed_articles": 1,
+      "citations_per_observed_article": 4.0,
+      "previous_year": 2013,
+      "previous_citations": 7,
+      "citation_acceleration": -3,
+      "citation_growth_pct": -42.85714285714286
+    },
+    {
+      "primary_category": "astro-ph.CO",
+      "year": 2015,
+      "category_citations": 4,
+      "observed_articles": 1,
+      "citations_per_observed_article": 4.0,
+      "previous_year": 2014,
+      "previous_citations": 4,
+      "citation_acceleration": 0,
+      "citation_growth_pct": 0.0
+    },
+    {
+      "primary_category": "astro-ph.CO",
+      "year": 2016,
+      "category_citations": 1,
+      "observed_articles": 1,
+      "citations_per_observed_article": 1.0,
+      "previous_year": 2015,
+      "previous_citations": 4,
+      "citation_acceleration": -3,
+      "citation_growth_pct": -75.0
+    },
+    {
+      "primary_category": "astro-ph.CO",
+      "year": 2017,
+      "category_citations": 3,
+      "observed_articles": 1,
+      "citations_per_observed_article": 3.0,
+      "previous_year": 2016,
+      "previous_citations": 1,
+      "citation_acceleration": 2,
+      "citation_growth_pct": 200.0
+    },
+    {
+      "primary_category": "astro-ph.CO",
+      "year": 2018,
+      "category_citations": 2,
+      "observed_articles": 1,
+      "citations_per_observed_article": 2.0,
+      "previous_year": 2017,
+      "previous_citations": 3,
+      "citation_acceleration": -1,
+      "citation_growth_pct": -33.333333333333336
+    },
+    {
+      "primary_category": "astro-ph.CO",
+      "year": 2019,
+      "category_citations": 3,
+      "observed_articles": 1,
+      "citations_per_observed_article": 3.0,
+      "previous_year": 2018,
+      "previous_citations": 2,
+      "citation_acceleration": 1,
+      "citation_growth_pct": 50.0
+    },
+    {
+      "primary_category": "astro-ph.CO",
+      "year": 2020,
+      "category_citations": 3,
+      "observed_articles": 1,
+      "citations_per_observed_article": 3.0,
+      "previous_year": 2019,
+      "previous_citations": 3,
+      "citation_acceleration": 0,
+      "citation_growth_pct": 0.0
+    },
+    {
+      "primary_category": "astro-ph.CO",
+      "year": 2021,
+      "category_citations": 17,
+      "observed_articles": 2,
+      "citations_per_observed_article": 8.5,
+      "previous_year": 2020,
+      "previous_citations": 3,
+      "citation_acceleration": 14,
+      "citation_growth_pct": 466.6666666666667
+    }
+  ]
+}

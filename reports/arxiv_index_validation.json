@@ -1,0 +1,197 @@
+{
+  "timestamp": "2026-10-16T23:24:30.832610+00:00",
+  "index": "arxiv-papers-silver-7b2c13bd8aef",
+  "source": "s3://arxiv-clean/current/data.parquet",
+  "source_etag": "\"c99eacf6de71f8dadc993b7dbd2fa59a-10\"",
+  "silver_rows": 100075,
+  "indexed_rows": 100075,
+  "category_counts_match": true,
+  "fulltext_hits": {
+    "value": 10000,
+    "relation": "gte"
+  },
+  "annual_buckets": [
+    {
+      "key_as_string": "1992-01-01T00:00:00.000Z",
+      "key": 694224000000,
+      "doc_count": 1
+    },
+    {
+      "key_as_string": "1993-01-01T00:00:00.000Z",
+      "key": 725846400000,
+      "doc_count": 1
+    },
+    {
+      "key_as_string": "1994-01-01T00:00:00.000Z",
+      "key": 757382400000,
+      "doc_count": 30
+    },
+    {
+      "key_as_string": "1995-01-01T00:00:00.000Z",
+      "key": 788918400000,
+      "doc_count": 24
+    },
+    {
+      "key_as_string": "1996-01-01T00:00:00.000Z",
+      "key": 820454400000,
+      "doc_count": 29
+    },
+    {
+      "key_as_string": "1997-01-01T00:00:00.000Z",
+      "key": 852076800000,
+      "doc_count": 19
+    },
+    {
+      "key_as_string": "1998-01-01T00:00:00.000Z",
+      "key": 883612800000,
+      "doc_count": 40
+    },
+    {
+      "key_as_string": "1999-01-01T00:00:00.000Z",
+      "key": 915148800000,
+      "doc_count": 60
+    },
+    {
+      "key_as_string": "2000-01-01T00:00:00.000Z",
+      "key": 946684800000,
+      "doc_count": 68
+    },
+    {
+      "key_as_string": "2001-01-01T00:00:00.000Z",
+      "key": 978307200000,
+      "doc_count": 78
+    },
+    {
+      "key_as_string": "2002-01-01T00:00:00.000Z",
+      "key": 1009843200000,
+      "doc_count": 90
+    },
+    {
+      "key_as_string": "2003-01-01T00:00:00.000Z",
+      "key": 1041379200000,
+      "doc_count": 89
+    },
+    {
+      "key_as_string": "2004-01-01T00:00:00.000Z",
+      "key": 1072915200000,
+      "doc_count": 122
+    },
+    {
+      "key_as_string": "2005-01-01T00:00:00.000Z",
+      "key": 1104537600000,
+      "doc_count": 159
+    },
+    {
+      "key_as_string": "2006-01-01T00:00:00.000Z",
+      "key": 1136073600000,
+      "doc_count": 211
+    },
+    {
+      "key_as_string": "2007-01-01T00:00:00.000Z",
+      "key": 1167609600000,
+      "doc_count": 294
+    },
+    {
+      "key_as_string": "2008-01-01T00:00:00.000Z",
+      "key": 1199145600000,
+      "doc_count": 431
+    },
+    {
+      "key_as_string": "2009-01-01T00:00:00.000Z",
+      "key": 1230768000000,
+      "doc_count": 588
+    },
+    {
+      "key_as_string": "2010-01-01T00:00:00.000Z",
+      "key": 1262304000000,
+      "doc_count": 822
+    },
+    {
+      "key_as_string": "2011-01-01T00:00:00.000Z",
+      "key": 1293840000000,
+      "doc_count": 1001
+    },
+    {
+      "key_as_string": "2012-01-01T00:00:00.000Z",
+      "key": 1325376000000,
+      "doc_count": 1379
+    },
+    {
+      "key_as_string": "2013-01-01T00:00:00.000Z",
+      "key": 1356998400000,
+      "doc_count": 1666
+    },
+    {
+      "key_as_string": "2014-01-01T00:00:00.000Z",
+      "key": 1388534400000,
+      "doc_count": 1877
+    },
+    {
+      "key_as_string": "2015-01-01T00:00:00.000Z",
+      "key": 1420070400000,
+      "doc_count": 2096
+    },
+    {
+      "key_as_string": "2016-01-01T00:00:00.000Z",
+      "key": 1451606400000,
+      "doc_count": 2626
+    },
+    {
+      "key_as_string": "2017-01-01T00:00:00.000Z",
+      "key": 1483228800000,
+      "doc_count": 3414
+    },
+    {
+      "key_as_string": "2018-01-01T00:00:00.000Z",
+      "key": 1514764800000,
+      "doc_count": 4523
+    },
+    {
+      "key_as_string": "2019-01-01T00:00:00.000Z",
+      "key": 1546300800000,
+      "doc_count": 6163
+    },
+    {
+      "key_as_string": "2020-01-01T00:00:00.000Z",
+      "key": 1577836800000,
+      "doc_count": 7989
+    },
+    {
+      "key_as_string": "2021-01-01T00:00:00.000Z",
+      "key": 1609459200000,
+      "doc_count": 8598
+    },
+    {
+      "key_as_string": "2022-01-01T00:00:00.000Z",
+      "key": 1640995200000,
+      "doc_count": 9017
+    },
+    {
+      "key_as_string": "2023-01-01T00:00:00.000Z",
+      "key": 1672531200000,
+      "doc_count": 11013
+    },
+    {
+      "key_as_string": "2024-01-01T00:00:00.000Z",
+      "key": 1704067200000,
+      "doc_count": 13866
+    },
+    {
+      "key_as_string": "2025-01-01T00:00:00.000Z",
+      "key": 1735689600000,
+      "doc_count": 16841
+    },
+    {
+      "key_as_string": "2026-01-01T00:00:00.000Z",
+      "key": 1767225600000,
+      "doc_count": 4850
+    }
+  ],
+  "recent_cs_ai_ids": [
+    "2604.01674",
+    "2604.01664",
+    "2604.01687"
+  ],
+  "legacy_index_replaced": false,
+  "gold_modified": false
+}

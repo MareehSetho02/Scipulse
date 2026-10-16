@@ -11,6 +11,19 @@ from pyspark.ml.functions import vector_to_array
 
 ROOT=Path(os.getenv('SCIPULSE_ROOT','/opt/airflow'))
 
+def category_citation_velocity(articles, yearly):
+    """Annual observed citations per primary category, without inventing missing years."""
+    observed=articles.select('arxiv_id','doi','primary_category').dropDuplicates(['arxiv_id']).join(yearly.select('doi','year','citations'), 'doi', 'inner')
+    annual=observed.groupBy('primary_category','year').agg(
+        F.sum('citations').alias('category_citations'),
+        F.countDistinct(F.when(F.col('citations').isNotNull(),F.col('arxiv_id'))).alias('observed_articles'))
+    window=Window.partitionBy('primary_category').orderBy('year')
+    return (annual.withColumn('citations_per_observed_article',F.col('category_citations')/F.col('observed_articles'))
+        .withColumn('previous_year',F.lag('year').over(window))
+        .withColumn('previous_citations',F.lag('category_citations').over(window))
+        .withColumn('citation_acceleration',F.when(F.col('year')==F.col('previous_year')+1,F.col('category_citations')-F.col('previous_citations')))
+        .withColumn('citation_growth_pct',F.when((F.col('year')==F.col('previous_year')+1)&(F.col('previous_citations')>0),100*(F.col('category_citations')/F.col('previous_citations')-1))))
+
 def build_spark():
     b=SparkSession.builder.appName('SciPulse-Gold').config('spark.sql.shuffle.partitions','8').config('spark.sql.adaptive.enabled','true').config('spark.hadoop.fs.s3a.endpoint',os.getenv('MINIO_ENDPOINT','http://minio:9000')).config('spark.hadoop.fs.s3a.access.key',os.getenv('MINIO_ACCESS_KEY','minioadmin')).config('spark.hadoop.fs.s3a.secret.key',os.getenv('MINIO_SECRET_KEY','minioadmin')).config('spark.hadoop.fs.s3a.path.style.access','true').config('spark.hadoop.fs.s3a.connection.ssl.enabled','false').config('spark.hadoop.fs.s3a.impl','org.apache.hadoop.fs.s3a.S3AFileSystem').config('spark.hadoop.fs.s3a.aws.credentials.provider','org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider')
     return b.getOrCreate()
@@ -53,6 +66,8 @@ def main():
     yearly=c.select('doi',F.explode(F.from_json('counts_by_year_json',yearly_schema)).alias('annual')).select('doi','annual.year',F.col('annual.cited_by_count').alias('citations'))
     cw=Window.partitionBy('doi').orderBy('year')
     yearly=yearly.withColumn('previous_citations',F.lag('citations').over(cw)).withColumn('citation_acceleration',F.col('citations')-F.col('previous_citations'))
+    category_velocity=category_citation_velocity(a,yearly)
+    category_velocity.write.mode('overwrite').parquet('s3a://citations-clean/analytics/category_yearly_velocity/')
     yearly.write.mode('overwrite').parquet('s3a://citations-clean/analytics/yearly_velocity/')
     annual.write.mode('overwrite').parquet('s3a://arxiv-clean/analytics/annual_growth/')
     mapping={'settings':{'number_of_shards':1,'number_of_replicas':0,'analysis':{'analyzer':{'scientific_english':{'type':'english'}}}},'mappings':{'properties':{**{k:{'type':'keyword'} for k in ['arxiv_id','doi','categories','primary_category','academic_field','signal_profile','keywords','openalex_id']},**{k:{'type':'date'} for k in ['date_published','date_updated','pipeline_updated_at','citations_observed_at']},'title':{'type':'text','analyzer':'scientific_english','fields':{'keyword':{'type':'keyword','ignore_above':512}}},'abstract':{'type':'text','analyzer':'scientific_english','term_vector':'with_positions_offsets'},**{k:{'type':'double'} for k in ['impact_score','citation_velocity','growth_pct','tfidf_peak','recency_component','citation_component','hn_component']},**{k:{'type':'long'} for k in ['citation_count','hn_score','hn_comments_count','hn_mentions','recent_citations']},**{k:{'type':'boolean'} for k in ['citation_matched','hn_matched','score_is_lower_bound']}}}}
@@ -92,4 +107,22 @@ def main():
     enriched.unpersist();joined.unpersist();a.unpersist();spark.stop()
     if not proof['two_workers_used']:
         raise RuntimeError('Deux workers distincts doivent avoir termine des taches Spark')
-if __name__=='__main__':main()
+def refresh_category_velocity():
+    """Recompute the category analytics from Silver without reindexing Gold."""
+    spark=build_spark()
+    try:
+        articles=spark.read.parquet('s3a://arxiv-clean/current/data.parquet')
+        yearly=spark.read.parquet('s3a://citations-clean/analytics/yearly_velocity/')
+        result=category_citation_velocity(articles,yearly).cache()
+        target='s3a://citations-clean/analytics/category_yearly_velocity/'
+        result.write.mode('overwrite').parquet(target)
+        report={'output':target,'rows':result.count(),'categories':result.select('primary_category').distinct().count(),
+                'gold_reindexed':False,'sample':[r.asDict() for r in result.orderBy('primary_category','year').limit(10).collect()]}
+        (ROOT/'reports'/'category_velocity.json').write_text(json.dumps(report,indent=2,default=str),encoding='utf-8')
+    finally:
+        spark.stop()
+
+if __name__=='__main__':
+    import sys
+    if '--category-velocity-only' in sys.argv:refresh_category_velocity()
+    else:main()

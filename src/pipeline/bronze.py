@@ -46,17 +46,41 @@ def hn(limit=200,history_pages=5):
     report=save_report('bronze_hn',{'timestamp':now(),'firebase_count':len(records),'historical_count':len(history) if history_pages > 0 else None,'history_refreshed':history_pages > 0,'history_source':'HN Algolia search API','bronze':'hn-raw/'})
     print(report,flush=True);return records,history
 
+def archive_arxiv_snapshot(source):
+    """Keep the full source bytes in Bronze, independently of the working sample."""
+    from botocore.exceptions import ClientError
+    digest=hashlib.sha256()
+    with source.open('rb') as stream:
+        for chunk in iter(lambda:stream.read(8*1024*1024),b''):digest.update(chunk)
+    checksum=digest.hexdigest()
+    key=f'snapshots/{checksum}/{source.name}'
+    client=ensure_buckets()
+    try:
+        stored=client.head_object(Bucket='arxiv-raw',Key=key)
+    except ClientError as exc:
+        if str(exc.response['Error']['Code']) not in ('404','NoSuchKey','NotFound'):raise
+        stored=None
+    if stored is None:
+        client.upload_file(str(source),'arxiv-raw',key,ExtraArgs={'Metadata':{'sha256':checksum}})
+    # Read the stored bytes: multipart ETags are not SHA-256 checksums.
+    remote=client.get_object(Bucket='arxiv-raw',Key=key)
+    actual=hashlib.sha256()
+    try:
+        for chunk in remote['Body'].iter_chunks(chunk_size=8*1024*1024):actual.update(chunk)
+    finally:
+        remote['Body'].close()
+    if remote['ContentLength']!=source.stat().st_size or actual.hexdigest()!=checksum:
+        raise RuntimeError('ArXiv Bronze snapshot differs from the full source')
+    report={'timestamp':now(),'source':source.name,'bytes':source.stat().st_size,
+            'sha256':checksum,'object':f's3://arxiv-raw/{key}',
+            'remote_sha256':actual.hexdigest(),'bytes_verified':True,'transformed':False}
+    save_report('bronze_arxiv_snapshot',report)
+    return report
+
+
 def arxiv(limit=100000):
     prepared=DATA/'arxiv.jsonl'
-    if prepared.exists() and os.getenv('SCIPULSE_RESAMPLE','0')!='1':
-        ensure_buckets().upload_file(str(prepared),'arxiv-raw','project/arxiv.jsonl')
-        print('Instantané ArXiv préparé réutilisé; SCIPULSE_RESAMPLE=1 pour rééchantillonner',flush=True)
-        return
     source=Path(os.getenv('ARXIV_SOURCE',ROOT/'data/arxiv-raw/arxiv-metadata-oai-snapshot.json'))
-    if not source.exists() and (DATA/'arxiv.jsonl').exists():
-        ensure_buckets().upload_file(str(DATA/'arxiv.jsonl'),'arxiv-raw','project/arxiv.jsonl')
-        print('Sous-ensemble fourni restauré dans Bronze',flush=True)
-        return
     if not source.exists():
         source.parent.mkdir(parents=True,exist_ok=True)
         import zipfile
@@ -69,6 +93,11 @@ def arxiv(limit=100000):
             member=next(n for n in z.namelist() if n.endswith('.json'))
             with z.open(member) as inp,source.open('wb') as out:
                 import shutil;shutil.copyfileobj(inp,out)
+    archive_arxiv_snapshot(source)
+    if prepared.exists() and os.getenv('SCIPULSE_RESAMPLE','0')!='1':
+        ensure_buckets().upload_file(str(prepared),'arxiv-raw','project/arxiv.jsonl')
+        print('Dump complet conservé et vérifié ; échantillon de travail réutilisé',flush=True)
+        return
     linked=set()
     hp=DATA/'hn_algolia.jsonl'
     if hp.exists():

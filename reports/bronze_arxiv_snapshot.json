@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-16T23:30:52.234729+00:00",
+  "source": "arxiv-metadata-oai-snapshot.json",
+  "bytes": 5196932018,
+  "sha256": "e505560d3362be66b1fcf18ecd9aaeade4a3ca39b532432c99b915aae9257fb8",
+  "object": "s3://arxiv-raw/snapshots/e505560d3362be66b1fcf18ecd9aaeade4a3ca39b532432c99b915aae9257fb8/arxiv-metadata-oai-snapshot.json",
+  "remote_sha256": "e505560d3362be66b1fcf18ecd9aaeade4a3ca39b532432c99b915aae9257fb8",
+  "bytes_verified": true,
+  "transformed": false
+}

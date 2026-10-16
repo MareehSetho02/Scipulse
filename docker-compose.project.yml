@@ -48,6 +48,7 @@ services:
 
   airflow-webserver:
     <<: *project-runtime
+    command: ["bash", "-c", "rm -f /opt/airflow/airflow-webserver.pid && exec airflow webserver"]
   airflow-scheduler:
     <<: *project-runtime
   spark:
