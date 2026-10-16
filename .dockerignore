@@ -1,0 +1,11 @@
+﻿.venv
+.git
+data
+reports
+gx
+artifacts
+spark
+notebooks
+*.zip
+*.docx
+.env

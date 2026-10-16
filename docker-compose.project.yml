@@ -1,0 +1,89 @@
+x-project-runtime: &project-runtime
+  image: scipulse-runtime:1.0
+  user: "${AIRFLOW_UID:-50000}:0"
+  build:
+    context: .
+    dockerfile: docker/runtime/Dockerfile
+  environment:
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    AIRFLOW__CORE__PARALLELISM: '2'
+    AIRFLOW__WEBSERVER__SECRET_KEY: ${AIRFLOW_SECRET_KEY:-scipulse-local-demo-change-before-exposure}
+    AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
+    PYTHONPATH: /opt/airflow
+    SCIPULSE_ROOT: /opt/airflow
+    MINIO_ENDPOINT: http://minio:9000
+    MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
+    MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
+    ES_HOST: http://elasticsearch:9200
+    KIBANA_URL: http://kibana:5601
+    LOGSTASH_URL: http://logstash:8081
+    OPENALEX_API_KEY: ${OPENALEX_API_KEY:-}
+  volumes:
+    - ./src:/opt/airflow/src
+    - ./airflow/dags:/opt/airflow/dags
+    - ./airflow/logs:/opt/airflow/logs
+    - ./data:/opt/airflow/data
+    - ./reports:/opt/airflow/reports
+    - ./artifacts:/opt/airflow/artifacts
+    - ./gx:/opt/airflow/gx
+    - ./dbt:/opt/airflow/dbt
+    - ./tests:/opt/airflow/tests
+services:
+  elasticsearch:
+    restart: unless-stopped
+  kibana:
+    restart: unless-stopped
+  airflow-init:
+    <<: *project-runtime
+    command:
+      - -c
+      - |
+        set -e
+        airflow db migrate
+        airflow users create --username admin --firstname Admin --lastname SciPulse --role Admin --email admin@scipulse.local --password admin || airflow users list
+        airflow pools set scipulse_medallion 1 'Accès exclusif aux instantanés Medallion'
+
+  airflow-webserver:
+    <<: *project-runtime
+  airflow-scheduler:
+    <<: *project-runtime
+  spark:
+    image: apache/spark:3.5.7
+    environment:
+      SPARK_DAEMON_MEMORY: 256m
+    entrypoint: ["/opt/spark/bin/spark-class"]
+    command: ["org.apache.spark.deploy.master.Master", "--host", "spark", "--port", "7077"]
+    ports: ["8090:8080", "7077:7077"]
+    volumes:
+      - ./src:/opt/spark-apps/src
+      - ./notebooks:/opt/spark-apps/notebooks
+  spark-worker-1: &spark-worker
+    image: scipulse-runtime:1.0
+    entrypoint: ["/opt/spark/bin/spark-class"]
+    command: ["org.apache.spark.deploy.worker.Worker", "--cores", "1", "--memory", "1g", "--work-dir", "/tmp/spark-work", "spark://spark:7077"]
+    environment:
+      SPARK_DAEMON_MEMORY: 256m
+      PYSPARK_PYTHON: /home/airflow/.local/bin/python
+    depends_on: [spark]
+    networks: [scipulse]
+    restart: unless-stopped
+  spark-worker-2:
+    <<: *spark-worker
+  logstash:
+    volumes:
+      - ./docker/logstash/project:/usr/share/logstash/pipeline:ro
+  minio-init:
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        until mc alias set local http://minio:9000 "$${MINIO_ACCESS_KEY}" "$${MINIO_SECRET_KEY}"; do sleep 2; done
+        for bucket in arxiv-raw hn-raw citations-raw arxiv-clean hn-clean citations-clean pipeline-metrics; do
+          mc mb --ignore-existing local/$$bucket
+        done
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}

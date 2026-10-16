@@ -193,6 +193,21 @@ services:
         condition: service_completed_successfully
     restart: unless-stopped
 
+  spark:
+    image: bitnami/spark:3.5 #apache/spark:3.5.7
+    container_name: scipulse-spark
+    entrypoint: ["/opt/spark/bin/spark-class"]
+    command: ["org.apache.spark.deploy.master.Master"]
+    ports:
+      - "8090:8080"
+      - "7077:7077"
+    volumes:
+      - ./src:/opt/spark-apps/src
+      - ./notebooks:/opt/spark-apps/notebooks
+    networks:
+      - scipulse
+
+
 # ═════════════════════════════════════════════════════════════════════════════
 #  VOLUMES & RÉSEAUX
 # ═════════════════════════════════════════════════════════════════════════════
@@ -207,3 +222,5 @@ volumes:
 networks:
   scipulse:
     driver: bridge
+
+
