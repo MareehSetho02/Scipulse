@@ -1,0 +1,68 @@
+{
+  "expectations": [
+    {
+      "id": "e03571bb-711b-449a-ae12-fc806e170cd1",
+      "kwargs": {
+        "column": "arxiv_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "bed34b9b-dfe4-4094-9ecf-ec055e11b3b9",
+      "kwargs": {
+        "column": "arxiv_id"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_unique"
+    },
+    {
+      "id": "98a9883f-9bd1-487c-9e58-fe699b37ec4b",
+      "kwargs": {
+        "column": "impact_score",
+        "max_value": 100.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "5f29f009-78f0-464a-b550-56c1aeb95d59",
+      "kwargs": {
+        "column": "citation_count",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "94e3b6e7-4dda-465a-be71-f938a0385c93",
+      "kwargs": {
+        "column": "hn_score",
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "19ab10e5-8f41-465e-abdf-8e8e1837a39e",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    }
+  ],
+  "id": "9576d532-371e-44f4-b6bb-84076e8b4fd8",
+  "meta": {
+    "great_expectations_version": "1.15.2"
+  },
+  "name": "project_gold_quality_suite",
+  "notes": null
+}

@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-10-16T20:03:36.172411+00:00",
+  "rows": 100075,
+  "es_count": 100075,
+  "checks": {
+    "unique_ids": true,
+    "same_row_count": true,
+    "unknown_citations_preserved": true,
+    "lower_bound_flag": true,
+    "score_range": true,
+    "quality_success": true,
+    "score_formula": true
+  },
+  "analytical_queries": {
+    "academic_without_hn": 881,
+    "viral_low_citations": 3,
+    "cross_source": 13
+  },
+  "gx_statistics": [
+    {
+      "evaluated_expectations": 6,
+      "successful_expectations": 6,
+      "unsuccessful_expectations": 0,
+      "success_percent": 100.0
+    }
+  ]
+}
