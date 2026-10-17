@@ -1,5 +1,5 @@
 {
-  "published_at": "2026-10-16T22:55:49.624888+00:00",
+  "published_at": "2026-10-16T23:55:44.307287+00:00",
   "sources": {
     "arxiv": {
       "bronze_rows_checked": 100075,
@@ -11,21 +11,21 @@
         "error_pct": 0.0
       },
       "bronze": {
-        "timestamp": "2026-10-16T19:51:21.997000+00:00",
-        "age_seconds": 11067.627888
+        "timestamp": "2026-10-16T23:43:50.800000+00:00",
+        "age_seconds": 713.507287
       },
       "silver": {
-        "timestamp": "2026-10-16T19:57:39+00:00",
-        "age_seconds": 10690.624888
+        "timestamp": "2026-10-16T23:45:18+00:00",
+        "age_seconds": 626.307287
       },
       "last_quality_check": {
-        "timestamp": "2026-10-16T19:57:30.086350+00:00",
-        "age_seconds": 10699.538538
+        "timestamp": "2026-10-16T23:45:08.532317+00:00",
+        "age_seconds": 635.77497
       }
     },
     "hn": {
-      "bronze_rows_checked": 7998,
-      "silver_rows_checked": 1049,
+      "bronze_rows_checked": 9298,
+      "silver_rows_checked": 1072,
       "quality_success": true,
       "quality": {
         "evaluated": 6,
@@ -33,16 +33,16 @@
         "error_pct": 0.0
       },
       "bronze": {
-        "timestamp": "2026-10-16T22:55:20.689000+00:00",
-        "age_seconds": 28.935888
+        "timestamp": "2026-10-16T23:55:14.621000+00:00",
+        "age_seconds": 29.686287
       },
       "silver": {
-        "timestamp": "2026-10-16T22:55:44+00:00",
-        "age_seconds": 5.624888
+        "timestamp": "2026-10-16T23:55:37+00:00",
+        "age_seconds": 7.307287
       },
       "last_quality_check": {
-        "timestamp": "2026-10-16T22:55:44.381022+00:00",
-        "age_seconds": 5.243866
+        "timestamp": "2026-10-16T23:55:37.790164+00:00",
+        "age_seconds": 6.517123
       }
     },
     "citations": {
@@ -55,24 +55,24 @@
         "error_pct": 0.0
       },
       "bronze": {
-        "timestamp": "2026-10-16T19:56:31.314000+00:00",
-        "age_seconds": 10758.310888
+        "timestamp": "2026-10-16T23:44:21.856000+00:00",
+        "age_seconds": 682.451287
       },
       "silver": {
-        "timestamp": "2026-10-16T19:59:01+00:00",
-        "age_seconds": 10608.624888
+        "timestamp": "2026-10-16T23:46:34+00:00",
+        "age_seconds": 550.307287
       },
       "last_quality_check": {
-        "timestamp": "2026-10-16T19:58:57.326362+00:00",
-        "age_seconds": 10612.298526
+        "timestamp": "2026-10-16T23:46:30.711147+00:00",
+        "age_seconds": 553.59614
       }
     }
   },
   "gold": {
     "rows": 100075,
     "updated": {
-      "timestamp": "2026-10-16T20:01:15.836000+00:00",
-      "age_seconds": 10473.788888
+      "timestamp": "2026-10-16T23:48:02.431000+00:00",
+      "age_seconds": 461.876287
     },
     "quality": {
       "evaluated": 6,
@@ -80,8 +80,8 @@
       "error_pct": 0.0
     },
     "last_quality_check": {
-      "timestamp": "2026-10-16T22:52:33.870761+00:00",
-      "age_seconds": 195.754127
+      "timestamp": "2026-10-16T23:50:20.746367+00:00",
+      "age_seconds": 323.56092
     }
   },
   "rate_definition": "100 * unsuccessful_expectations / evaluated_expectations",

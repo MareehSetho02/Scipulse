@@ -1,0 +1,96 @@
+{
+  "timestamp": "2026-10-16T23:51:09.967812+00:00",
+  "airflow_run_id": "validation_finale_20261017",
+  "dag_state": "success",
+  "tasks": [
+    {
+      "task_id": "silver_arxiv",
+      "state": "success",
+      "start_date": "2026-10-16 23:44:23.412316+00:00",
+      "end_date": "2026-10-16 23:45:21.153989+00:00"
+    },
+    {
+      "task_id": "bronze_arxiv",
+      "state": "success",
+      "start_date": "2026-10-16 23:42:02.946557+00:00",
+      "end_date": "2026-10-16 23:43:51.094714+00:00"
+    },
+    {
+      "task_id": "bronze_hn",
+      "state": "success",
+      "start_date": "2026-10-16 23:41:16.443579+00:00",
+      "end_date": "2026-10-16 23:42:01.525746+00:00"
+    },
+    {
+      "task_id": "bronze_citations",
+      "state": "success",
+      "start_date": "2026-10-16 23:43:53.115314+00:00",
+      "end_date": "2026-10-16 23:44:22.463995+00:00"
+    },
+    {
+      "task_id": "silver_citations",
+      "state": "success",
+      "start_date": "2026-10-16 23:46:04.023579+00:00",
+      "end_date": "2026-10-16 23:46:36.153485+00:00"
+    },
+    {
+      "task_id": "silver_hn",
+      "state": "success",
+      "start_date": "2026-10-16 23:45:23.517611+00:00",
+      "end_date": "2026-10-16 23:45:51.344075+00:00"
+    },
+    {
+      "task_id": "transform_dbt",
+      "state": "success",
+      "start_date": "2026-10-16 23:45:51.980484+00:00",
+      "end_date": "2026-10-16 23:46:02.974107+00:00"
+    },
+    {
+      "task_id": "spark_gold",
+      "state": "success",
+      "start_date": "2026-10-16 23:46:57.758321+00:00",
+      "end_date": "2026-10-16 23:49:17.494571+00:00"
+    },
+    {
+      "task_id": "validate_gold",
+      "state": "success",
+      "start_date": "2026-10-16 23:49:53.575235+00:00",
+      "end_date": "2026-10-16 23:50:22.332200+00:00"
+    },
+    {
+      "task_id": "publish_dashboards",
+      "state": "success",
+      "start_date": "2026-10-16 23:50:31.036292+00:00",
+      "end_date": "2026-10-16 23:50:50.177820+00:00"
+    }
+  ],
+  "spark_run_id": "3329d85c-0d14-473d-8afa-a36e360679f8",
+  "spark_application_id": "app-20261016234706-0000",
+  "articles": 100075,
+  "analytical_queries": {
+    "academic_without_hn": 881,
+    "viral_low_citations": 3,
+    "cross_source": 13
+  },
+  "tests": {
+    "tests": 23,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "checks": {
+    "dag_success": true,
+    "all_tasks_success": true,
+    "row_count": true,
+    "all_documents_current_run": true,
+    "gold_quality": true,
+    "query_counts": true,
+    "two_workers_used": true,
+    "tfidf_holdout": true,
+    "tests_success": true
+  },
+  "full_pipeline_rerun": true,
+  "same_host_docker": true,
+  "logstash_temporarily_stopped_during_run": true,
+  "success": true
+}

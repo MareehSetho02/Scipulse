@@ -2,6 +2,22 @@
 
 ## Périmètre
 
+## Exécution complète après corrections
+
+Le DAG `scipulse_arxiv_pipeline`, run `validation_finale_20261017`, a terminé ses dix tâches avec succès le 16 octobre 2026 à 23:50 UTC (17 octobre à 01:50 à Paris). Il a vérifié le dump complet Bronze, réutilisé l'échantillon de travail, exécuté les collectes, les trois Silver, dbt, Spark, les contrôles Gold et la publication des dashboards. Les 100 075 documents Gold portent tous le run Spark `3329d85c-0d14-473d-8afa-a36e360679f8`. Les filtres analytiques donnent 881, 3 et 13 résultats, identiques aux calculs du résumé Spark.
+
+Les deux workers ont terminé 140 et 36 tâches, sans échec. Le test TF-IDF hors ajustement a été réexécuté avec succès. Les citations annuelles par catégorie ont été recalculées dans le job Gold. Logstash a été temporairement arrêté pour libérer de la mémoire, puis redémarré ; les rapports MinIO sont conservés. Les 23 tests du code proviennent de la suite enregistrée avant cette exécution.
+
+La preuve synthétique est `reports/final_execution_validation.json`. Le contrôle se relance ainsi :
+
+```powershell
+docker exec scipulse-airflow-sched python -m src.pipeline.verify_execution --run-id validation_finale_20261017 --logstash-paused
+```
+
+L'option `--logstash-paused` décrit l'arrêt temporaire réalisé pendant cette exécution. Ce parcours utilise les volumes de travail existants ; il ne remplace pas le test de démarrage sur volumes neufs.
+
+## Vérifications enregistrées
+
 La dernière suite complète compte **23 tests réussis**, sans échec ni test ignoré : les 20 tests initiaux, un test Spark sur les citations par catégorie et deux cas sur l'intégrité du dump ArXiv. Les rapports sont `reports/tests_latest.xml` et `reports/latest_validation.json`. Ce dernier rassemble aussi les contrôles des rapports enregistrés pour le dump, les citations par catégorie et l'index issu de Silver ; il ne représente pas une nouvelle exécution complète du pipeline. Les résultats de 20 et 21 tests ci-dessous décrivent les vérifications antérieures.
 
 La validation couvre les transformations, les identifiants, la qualité Gold, la cohérence entre les sorties Spark et Elasticsearch, les requêtes analytiques et le monitoring. Les commandes de contrôle ci-dessous ne relancent ni la collecte ni le calcul Spark. Le contrôle Gold publie ses résultats dans MinIO et les Data Docs, sans réécrire les articles Elasticsearch.

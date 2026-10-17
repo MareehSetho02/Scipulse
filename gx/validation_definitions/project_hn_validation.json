@@ -1,11 +1,11 @@
 {
   "data": {
     "asset": {
-      "id": "3a65a47d-e367-4277-bde9-ec2fe1353919",
+      "id": "3ed1baec-a22e-44fe-8814-917427852e01",
       "name": "project_hn_data"
     },
     "batch_definition": {
-      "id": "00dbc8ff-65b6-459b-93a7-921fd72d6886",
+      "id": "4f0c6a15-b51f-4dc9-90af-c546060a9320",
       "name": "all_rows"
     },
     "datasource": {

@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-10-16T22:55:44.381022+00:00",
+  "timestamp": "2026-10-16T23:55:37.790164+00:00",
   "source": "hn",
-  "bronze_rows": 7998,
+  "bronze_rows": 9298,
   "missing_ids": 0,
-  "duplicate_ids": 6949,
-  "silver_rows": 1049,
+  "duplicate_ids": 8226,
+  "silver_rows": 1072,
   "quality_success": true,
   "statistics": [
     {

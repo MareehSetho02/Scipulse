@@ -81,7 +81,7 @@ Les contrôles de l'archive vérifient les fichiers requis, les huit images, les
 - Le corpus est échantillonné et complété de références HN ; les chiffres ne décrivent pas tout ArXiv.
 - Les citations non collectées restent inconnues et le score reste une heuristique.
 - Les citations annuelles par catégorie sont enregistrées dans MinIO ; cette table n'est pas exposée dans Kibana.
-- Un index séparé issu de la Silver actuelle est vérifié ; l'index historique `arxiv-papers` reste conservé. Voir [EXPLORATION_ARXIV.md](EXPLORATION_ARXIV.md).
+- L'alias `arxiv-papers` expose l'index vérifié issu de Silver ; les anciens articles sont conservés dans `arxiv-papers-tp-archive`. La migration est ponctuelle, distincte du démarrage sur volumes neufs. Voir [EXPLORATION_ARXIV.md](EXPLORATION_ARXIV.md).
 - Le dump complet est conservé dans Bronze avec contrôle SHA-256 ; l'export ZIP et les traitements Silver/Gold utilisent le corpus préparé.
 - La comparaison de jointures porte sur les plans, sans benchmark de temps indépendant.
 - Les tests TF-IDF contrôlent le contrat de transformation, sans mesure de précision prédictive.

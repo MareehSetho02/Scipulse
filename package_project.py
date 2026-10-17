@@ -20,6 +20,8 @@ REQUIRED = ['README.md', 'docker-compose.yml', 'docker-compose.project.yml',
             'reports/latest_validation.json', 'reports/bronze_arxiv_snapshot.json',
             'reports/category_velocity.json', 'reports/arxiv_index_validation.json',
             'src/pipeline/index_arxiv.py', 'docs/EXPLORATION_ARXIV.md',
+            'src/pipeline/verify_execution.py', 'reports/final_execution_validation.json',
+            'reports/arxiv_index_migration.json',
             'notebooks/01_qualite_et_exploration.ipynb', 'notebooks/02_spark_score_et_validation.ipynb',
             *[f'artifacts/screenshots/scipulse-kibana{i}.png' for i in range(6)],
             'artifacts/screenshots/monitoring-volumes-qualite.png',
@@ -62,8 +64,11 @@ def main():
     validation = json.loads((ROOT / 'reports/final_validation.json').read_text(encoding='utf-8'))
     cold = json.loads((ROOT / 'reports/cold_start.json').read_text(encoding='utf-8'))
     latest = json.loads((ROOT / 'reports/latest_validation.json').read_text(encoding='utf-8'))
+    execution = json.loads((ROOT / 'reports/final_execution_validation.json').read_text(encoding='utf-8'))
     if not latest['success']:
         raise RuntimeError('Latest validation failed')
+    if not execution['success']:
+        raise RuntimeError('Full pipeline execution validation failed')
     manifest = {
         'created_at': datetime.now(timezone.utc).isoformat(),
         'git_head': commit.stdout.strip() if commit.returncode == 0 else None,
@@ -71,6 +76,9 @@ def main():
         'archive_name_provisional': args.name == 'scipulse_projet4_AIA01',
         'validation_success': validation['success'], 'tests': validation['tests'],
         'latest_validation_success': latest['success'], 'latest_tests': latest['tests'],
+        'working_stack_pipeline_rerun': execution['full_pipeline_rerun'],
+        'working_stack_pipeline_run_id': execution['airflow_run_id'],
+        'working_stack_pipeline_success': execution['success'],
         'cold_start_success': cold.get('success', False),
         'cold_start_source_commit': cold.get('source_commit'),
         'image_build_retested': cold.get('image_build_retested', False),
@@ -78,7 +86,7 @@ def main():
         'limits': ['Prepared sample, not the complete ArXiv dump',
                    'Category citation analytics are stored in MinIO, not displayed in Kibana',
                    'Cold start uses existing images; full source collection not rerun on fresh volumes',
-                   'Current Silver exploration uses a separate index; legacy arxiv-papers is preserved'],
+                   'arxiv-papers aliases the verified Silver index; legacy articles retained in arxiv-papers-tp-archive; one-time migration is separate from fresh startup'],
         'sha256': {},
     }
     output = ROOT / 'artifacts' / (args.name + '.zip')

@@ -1,11 +1,11 @@
 {
   "data": {
     "asset": {
-      "id": "2acec0ce-5bd2-4bed-baf1-ddea042fadae",
+      "id": "5f77d8e3-f34f-4343-b9f0-ddce3596106f",
       "name": "project_citations_data"
     },
     "batch_definition": {
-      "id": "2aeed74e-6cc0-4dfa-853b-64c79ef38a20",
+      "id": "31565ced-640c-467a-bb08-04492eded976",
       "name": "all_rows"
     },
     "datasource": {

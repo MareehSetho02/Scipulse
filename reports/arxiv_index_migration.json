@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-10-16T23:38:30.867965+00:00",
+  "alias": "arxiv-papers",
+  "silver_index": "arxiv-papers-silver-7b2c13bd8aef",
+  "silver_documents": 100075,
+  "archive_index": "arxiv-papers-tp-archive",
+  "legacy_documents": 100000,
+  "archived_documents": 100000,
+  "archive_mapping_matches": true,
+  "gold_count_before": 100075,
+  "gold_count_after": 100075,
+  "archive_write_blocked": true,
+  "success": true
+}

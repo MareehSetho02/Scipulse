@@ -1,11 +1,11 @@
 {
   "data": {
     "asset": {
-      "id": "3df6668b-07ec-4c74-8abf-f6bc5f2d9e66",
+      "id": "ffcf6366-7aa7-42df-a9c2-d591f0388b8b",
       "name": "project_arxiv_data"
     },
     "batch_definition": {
-      "id": "6daffd93-af3b-4a68-90a3-e227a8f23aab",
+      "id": "cac96f4e-5045-40b0-b344-8bf4487a7b40",
       "name": "all_rows"
     },
     "datasource": {

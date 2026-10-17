@@ -18,7 +18,7 @@
 | Fenêtres temporelles | Croissance annuelle, évolution des citations et vélocité récente ; sorties MinIO |
 | TF-IDF MLlib | Modèle dans MinIO ; test de transformation de trois textes hors ajustement réussi |
 | Score d'impact | Citations, popularité HN et récence ; pondérations justifiées dans la méthodologie |
-| Exécution entre workers | Deux workers Docker sur un même hôte : 108 et 55 tâches terminées, aucune en échec ; `reports/spark_cluster_execution.json` |
+| Exécution entre workers | Deux workers Docker sur un même hôte : 140 et 36 tâches terminées, aucune en échec ; `reports/spark_cluster_execution.json` |
 | Écriture des résultats Spark | Connecteur Elasticsearch-Hadoop vers `arxiv-papers-enriched` ; résumé dans `reports/gold_summary.parquet` |
 | Tests du code | 23 tests réussis dans Docker, dont les contrôles Spark par catégorie et d'intégrité du dump ; rapports `reports/tests_latest.xml` et `reports/latest_validation.json`. Le rapport initial de 20 tests est conservé. |
 
@@ -37,6 +37,8 @@
 
 Les rapports et captures décrivent des vérifications enregistrées ; ils ne garantissent pas l'état permanent des services.
 
+La dernière exécution complète `validation_finale_20261017` a réussi sur les dix tâches, avec publication des dashboards et contrôle du run Spark sur tous les documents Gold. Preuve : `reports/final_execution_validation.json`. Les captures antérieures restent des instantanés de leurs dates de prise.
+
 ## Couverture fonctionnelle
 
 | Fonctionnalité | État et limites |
@@ -45,7 +47,7 @@ Les rapports et captures décrivent des vérifications enregistrées ; ils ne ga
 | Document ou notebook sur Spark | Méthodologie et notebook Spark : source, jointures, indicateurs et score |
 | Procédure de validation et captures Kibana | Contrôles et filtres documentés ; six captures, dont les filtres affichant 881 et 3 résultats |
 | Volumes, taux d'erreur GX et fraîcheur dans le monitoring | Volumes contrôlés par source, taux d'échec des attentes, dernières écritures et contrôles et anciennetés ; publication après chaque cycle HN ; méthode et limites dans `docs/MONITORING.md` |
-| Exploration ArXiv du module 1 | Index séparé `arxiv-papers-silver-7b2c13bd8aef` créé depuis la Silver : 100 075 documents, effectifs par catégorie vérifiés, recherches plein texte et temporelles exécutées. L'index historique `arxiv-papers` n'est pas remplacé. Voir [EXPLORATION_ARXIV.md](EXPLORATION_ARXIV.md). |
+| Exploration ArXiv du module 1 | Alias `arxiv-papers` vers l'index Silver validé : 100 075 articles, effectifs par catégorie vérifiés, recherches plein texte et temporelles exécutées. Les 100 000 anciens articles sont conservés dans `arxiv-papers-tp-archive`. Voir [EXPLORATION_ARXIV.md](EXPLORATION_ARXIV.md). |
 | Indicateurs temporels par catégorie | Croissance des publications ; citations annuelles par catégorie, moyenne par article observé, accélération et taux d'évolution entre années consécutives dans MinIO ; table de citations non exposée dans Kibana |
 | Ingestion complète des données sources | Dump ArXiv complet conservé sans transformation dans Bronze et vérifié par SHA-256 ; traitements Silver/Gold limités à l'échantillon. Appels OpenAlex groupés par DOI, sans pagination exhaustive |
 

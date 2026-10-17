@@ -1,7 +1,7 @@
 {
   "expectations": [
     {
-      "id": "93b85f22-7978-46bf-9aca-8bfc3fa7a30b",
+      "id": "4f5d9f4c-d1b1-4239-b6ee-c20ca5bd356d",
       "kwargs": {
         "column": "openalex_id"
       },
@@ -10,7 +10,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "6f4928c2-dc1c-4e37-8d69-d29254d40ca2",
+      "id": "c3052f69-0512-4fef-aeb4-f529ecd13b94",
       "kwargs": {
         "column": "doi"
       },
@@ -19,7 +19,7 @@
       "type": "expect_column_values_to_be_unique"
     },
     {
-      "id": "7f318bde-08b5-4318-bd89-6007093d7289",
+      "id": "04241a1f-a899-4fe9-84b7-206041c2f42d",
       "kwargs": {
         "column": "doi"
       },
@@ -28,7 +28,7 @@
       "type": "expect_column_values_to_not_be_null"
     },
     {
-      "id": "2a6ff184-99d5-4cee-abe2-f3b2483fc0ce",
+      "id": "46583dd0-eabb-4647-b344-ef615c27ff2c",
       "kwargs": {
         "column": "citation_count",
         "min_value": 0.0
@@ -38,7 +38,7 @@
       "type": "expect_column_values_to_be_between"
     },
     {
-      "id": "bf726196-b25a-4e75-9243-f4a51f60ab40",
+      "id": "8931b0d5-1158-4dc0-ab84-98fbae5c7a25",
       "kwargs": {
         "min_value": 1
       },
